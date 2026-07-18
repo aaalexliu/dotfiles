@@ -30,6 +30,10 @@
           {
             home-manager.useGlobalPkgs = true;
             home-manager.useUserPackages = true;
+            # Back up (don't error on) any pre-existing file home-manager needs
+            # to replace, e.g. the ~/.zshrc the Nix installer wrote. The old
+            # file is renamed to <name>.backup on first activation.
+            home-manager.backupFileExtension = "backup";
             home-manager.extraSpecialArgs = { inherit user; };
             home-manager.users.${user} = import ./home.nix;
           }
