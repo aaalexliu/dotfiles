@@ -53,6 +53,42 @@ in
     };
   };
 
+  programs.git = {
+    enable = true;
+    settings = {
+      user.name = "aaalexliu";
+      user.email = "4alexliu@gmail.com";
+      init.defaultBranch = "main";
+      push.autoSetupRemote = true;  # first `git push` on a new branch sets upstream
+      pull.rebase = true;           # rebase instead of merge on pull
+    };
+  };
+
+  programs.ssh = {
+    enable = true;
+    enableDefaultConfig = false;  # opt out of the deprecated implicit defaults
+    settings = {
+      # Re-declare the defaults home-manager used to inject implicitly.
+      "*" = {
+        ForwardAgent = false;
+        AddKeysToAgent = "no";
+        Compression = false;
+        ServerAliveInterval = 0;
+        ServerAliveCountMax = 3;
+        HashKnownHosts = false;
+        UserKnownHostsFile = "~/.ssh/known_hosts";
+        ControlMaster = "no";
+        ControlPath = "~/.ssh/master-%r@%n:%p";
+        ControlPersist = "no";
+      };
+      "github.com" = {
+        IdentityFile = "~/.ssh/id_ed25519";
+        AddKeysToAgent = "yes";  # load key into ssh-agent on first use
+        UseKeychain = "yes";     # store passphrase in the macOS keychain
+      };
+    };
+  };
+
   # Edit-in-place: the real file stays in my repo, ~/.config just points at it.
   home.file.".config/wezterm".source =
     config.lib.file.mkOutOfStoreSymlink "${dotfiles}/home/.config/wezterm";
