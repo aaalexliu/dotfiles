@@ -31,6 +31,19 @@
     finder.FXPreferredViewStyle = "Nlsv";  # list view by default
     finder.CreateDesktop = false;          # clean desktop
     trackpad.Clicking = true;              # tap to click
+
+    # Disable the built-in macOS shortcuts we hand off to other apps.
+    # Screenshots -> CleanShot X; Cmd-Space -> Alfred (instead of Spotlight).
+    # Numbers are AppleSymbolicHotKeys IDs. Takes effect after logout/login.
+    CustomUserPreferences."com.apple.symbolichotkeys".AppleSymbolicHotKeys = {
+      "28" = { enabled = false; };   # Save picture of screen as file   (Shift-Cmd-3)
+      "29" = { enabled = false; };   # Copy picture of screen           (Ctrl-Shift-Cmd-3)
+      "30" = { enabled = false; };   # Save picture of selected area    (Shift-Cmd-4)
+      "31" = { enabled = false; };   # Copy picture of selected area    (Ctrl-Shift-Cmd-4)
+      "184" = { enabled = false; };  # Screenshot & recording options   (Shift-Cmd-5)
+      "64" = { enabled = false; };   # Show Spotlight search            (Cmd-Space)
+      "65" = { enabled = false; };   # Show Finder search window        (Opt-Cmd-Space)
+    };
   };
   nix-homebrew = {
     enable = true;
