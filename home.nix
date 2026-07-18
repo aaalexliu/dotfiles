@@ -18,6 +18,14 @@ in
     neovim
     tmux
     gh        # github cli
+    # portable cli i want reproducible across machines
+    awscli2   # aws cli
+    uv        # python package/proj manager
+    yq-go     # yaml/json processor (mikefarah yq)
+    tldr      # concise command examples
+    ffmpeg    # media transcoding
+    mkcert    # local trusted TLS certs
+    yt-dlp    # media downloader
     # the font everything renders in
     nerd-fonts.hack
   ];
@@ -55,8 +63,19 @@ in
     };
   };
 
+  # modern cli upgrades (opt-in; plain ls/cat/cd still work)
+  programs.direnv = {
+    enable = true;
+    nix-direnv.enable = true;  # faster, cached direnv for nix shells
+  };
+  programs.eza.enable = true;    # nicer ls
+  programs.bat.enable = true;    # nicer cat
+  programs.zoxide.enable = true; # smarter cd (z)
+  programs.atuin.enable = true;  # searchable shell history
+
   programs.git = {
     enable = true;
+    delta.enable = true;  # syntax-highlighted diffs
     settings = {
       user.name = "aaalexliu";
       user.email = "4alexliu@gmail.com";
@@ -98,6 +117,10 @@ in
     config.lib.file.mkOutOfStoreSymlink "${dotfiles}/home/.config/nvim";
   home.file.".config/herdr".source =
     config.lib.file.mkOutOfStoreSymlink "${dotfiles}/home/.config/herdr";
+  home.file.".config/ghostty".source =
+    config.lib.file.mkOutOfStoreSymlink "${dotfiles}/home/.config/ghostty";
+  home.file.".tmux.conf".source =
+    config.lib.file.mkOutOfStoreSymlink "${dotfiles}/home/.tmux.conf";
   home.file.".claude/settings.json".source =
     config.lib.file.mkOutOfStoreSymlink "${dotfiles}/home/.claude/settings.json";
 

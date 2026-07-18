@@ -26,7 +26,10 @@
     dock.autohide = true;
     finder.FXPreferredViewStyle = "Nlsv";  # list view by default
     finder.CreateDesktop = false;          # clean desktop
+    finder.ShowPathbar = true;             # path breadcrumb at bottom of Finder
+    finder.AppleShowAllFiles = true;       # show hidden dotfiles in Finder
     trackpad.Clicking = true;              # tap to click
+    screencapture.location = "~/Screenshots";  # keep the Desktop clean
   };
   nix-homebrew = {
     enable = true;
@@ -39,6 +42,7 @@
     onActivation.extraFlags = [ "--force" ];
     brews = [
       "herdr"
+      "mise"  # runtime version manager (kept on brew: ~/.zshrc activates /opt/homebrew/bin/mise)
     ];
     casks = [
       "wezterm"
@@ -50,6 +54,9 @@
       "alfred"
       "cleanshot"
       "rectangle"
+      "keycastr"              # on-screen keystrokes
+      "shortcat"              # keyboard-driven UI navigation
+      "session-manager-plugin"  # aws ssm session manager
     ];
   };
 }
