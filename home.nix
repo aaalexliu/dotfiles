@@ -73,9 +73,13 @@ in
   programs.zoxide.enable = true; # smarter cd (z)
   programs.atuin.enable = true;  # searchable shell history
 
+  programs.delta = {
+    enable = true;                # syntax-highlighted diffs
+    enableGitIntegration = true;
+  };
+
   programs.git = {
     enable = true;
-    delta.enable = true;  # syntax-highlighted diffs
     settings = {
       user.name = "aaalexliu";
       user.email = "4alexliu@gmail.com";
