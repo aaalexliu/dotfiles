@@ -40,6 +40,13 @@
     casks = [
       "wezterm"
       "claude-code"
+      "obsidian"
+      "orbstack"
+      "visual-studio-code"
+      "ghostty"
+      "alfred"
+      "cleanshot"
+      "rectangle"
     ];
   };
 }
