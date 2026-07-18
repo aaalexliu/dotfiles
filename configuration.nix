@@ -64,7 +64,7 @@
       "orbstack"
       "visual-studio-code"
       "ghostty"
-      "alfred"
+      "alfred@4"  # pinned to v4 (licensed); "alfred" would install v5
       "cleanshot"
       "rectangle"
     ];
