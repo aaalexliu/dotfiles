@@ -7,6 +7,9 @@
   nixpkgs.config.allowUnfree = true;
   nixpkgs.hostPlatform = "aarch64-darwin"; # use x86_64-darwin for Intel CPU
 
+  networking.computerName = "alex-m5";  # friendly name (Sharing, AirDrop)
+  networking.hostName = "alex-m5";      # HostName + LocalHostName (.local, SSH)
+
   system.primaryUser = user;
   users.users.${user} = {
     home = "/Users/${user}";
