@@ -15,6 +15,10 @@
     home = "/Users/${user}";
   };
   system.stateVersion = 6;
+  system.keyboard = {
+    enableKeyMapping = true;         # required for the remap below to take effect
+    remapCapsLockToEscape = true;    # Caps Lock acts as Escape
+  };
   system.defaults = {
     NSGlobalDomain = {
       AppleInterfaceStyle = "Dark";
