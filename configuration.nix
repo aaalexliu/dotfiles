@@ -26,6 +26,7 @@
       InitialKeyRepeat = 15;  # short delay before repeat
       _HIHideMenuBar = true;  # auto-hide the menu bar
       AppleShowAllExtensions = true;
+      "com.apple.trackpad.scaling" = 1.5;  # tracking speed
     };
     dock.autohide = true;
     finder.FXPreferredViewStyle = "Nlsv";  # list view by default
@@ -47,6 +48,11 @@
       "64" = { enabled = false; };   # Show Spotlight search            (Cmd-Space)
       "65" = { enabled = false; };   # Show Finder search window        (Opt-Cmd-Space)
     };
+
+    # Three-finger swipe down = App Exposé (show all windows of the front app).
+    # Set on both the built-in trackpad and Bluetooth/Magic Trackpad domains.
+    CustomUserPreferences."com.apple.AppleMultitouchTrackpad".TrackpadThreeFingerVertSwipeGesture = 2;
+    CustomUserPreferences."com.apple.driver.AppleBluetoothMultitouch.trackpad".TrackpadThreeFingerVertSwipeGesture = 2;
   };
   nix-homebrew = {
     enable = true;
