@@ -16,6 +16,8 @@ in
     jq        # json on the command line
     lazygit
     neovim
+    tmux
+    gh        # github cli
     # the font everything renders in
     nerd-fonts.hack
   ];
