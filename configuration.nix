@@ -24,7 +24,7 @@
       AppleInterfaceStyle = "Dark";
       KeyRepeat = 2;          # fast key repeat
       InitialKeyRepeat = 15;  # short delay before repeat
-      _HIHideMenuBar = true;  # auto-hide the menu bar
+      _HIHideMenuBar = false;  # always show the menu bar
       AppleShowAllExtensions = true;
       "com.apple.trackpad.scaling" = 1.5;  # tracking speed
     };
@@ -62,10 +62,9 @@
     enable = true;
     onActivation.cleanup = "zap";  # remove anything not listed here
     onActivation.autoUpdate = true;
-    onActivation.extraFlags = [ "--force" ];
     brews = [
       "herdr"
-      "mise"  # runtime version manager (kept on brew: ~/.zshrc activates /opt/homebrew/bin/mise)
+      "mise"  # runtime version manager, activated in ~/.zshrc via home.nix
     ];
     casks = [
       "wezterm"

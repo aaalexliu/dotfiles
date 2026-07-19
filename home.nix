@@ -38,6 +38,7 @@ in
     syntaxHighlighting.enable = true;  # commands turn green when valid
     initContent = ''
       bindkey '^f' autosuggest-accept
+      eval "$(/opt/homebrew/bin/mise activate zsh)"
     '';
     shellAliases = {
       ".." = "cd ..";
