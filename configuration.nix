@@ -57,6 +57,7 @@
   nix-homebrew = {
     enable = true;
     inherit user;
+    autoMigrate = true;  # adopt an existing /opt/homebrew install instead of failing
   };
   homebrew = {
     enable = true;
@@ -68,6 +69,7 @@
     ];
     casks = [
       "wezterm"
+      "claude"
       "claude-code"
       "obsidian"
       "orbstack"
@@ -79,6 +81,26 @@
       "keycastr"              # on-screen keystrokes
       "shortcat"              # keyboard-driven UI navigation
       "session-manager-plugin"  # aws ssm session manager
+      "zoom"
+      "slack"
     ];
   };
+
+  # Launch these apps at login. nix-darwin has no native "login items" option,
+  # so we use per-user launch agents that `open -b <bundle-id>` once at login.
+  # Bundle IDs (not app names) survive version renames, e.g. Alfred 5 -> 6.
+  launchd.user.agents =
+    let
+      loginItem = bundleId: {
+        serviceConfig = {
+          ProgramArguments = [ "/usr/bin/open" "-b" bundleId ];
+          RunAtLoad = true;
+        };
+      };
+    in
+    {
+      rectangle = loginItem "com.knollsoft.Rectangle";
+      cleanshot = loginItem "pl.maketheweb.cleanshotx";
+      alfred = loginItem "com.runningwithcrayons.Alfred";
+    };
 }
