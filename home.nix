@@ -109,6 +109,10 @@ in
       };
       "github.com" = {
         IdentityFile = "~/.ssh/id_ed25519";
+        # Use ONLY id_ed25519 for personal github.com, never other agent keys.
+        # Without this, the work key (id_jxp, loaded in the agent for ~/dev/jxp
+        # repos) gets offered first and GitHub authenticates as the work account.
+        IdentitiesOnly = "yes";
         AddKeysToAgent = "yes";  # load key into ssh-agent on first use
         UseKeychain = "yes";     # store passphrase in the macOS keychain
       };
