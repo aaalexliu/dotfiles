@@ -1,4 +1,4 @@
-{ user, ... }:
+{ user, hostName, ... }:
 
 {
   # Determinate already manages the Nix daemon, so nix-darwin shouldn't.
@@ -7,8 +7,10 @@
   nixpkgs.config.allowUnfree = true;
   nixpkgs.hostPlatform = "aarch64-darwin"; # use x86_64-darwin for Intel CPU
 
-  networking.computerName = "alex-m5";  # friendly name (Sharing, AirDrop)
-  networking.hostName = "alex-m5";      # HostName + LocalHostName (.local, SSH)
+  # Per-machine name, supplied by the host entry in flake.nix (not hardcoded, so
+  # two machines sharing this repo don't collide on the network).
+  networking.computerName = hostName;  # friendly name (Sharing, AirDrop)
+  networking.hostName = hostName;      # HostName + LocalHostName (.local, SSH)
 
   system.primaryUser = user;
   users.users.${user} = {
