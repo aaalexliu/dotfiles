@@ -83,7 +83,6 @@
       "keycastr"              # on-screen keystrokes
       "shortcat"              # keyboard-driven UI navigation
       "session-manager-plugin"  # aws ssm session manager
-      "slack"
     ];
   };
 
