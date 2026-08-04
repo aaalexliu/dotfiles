@@ -10,7 +10,7 @@ One repo, one command, and a fresh Mac ends up configured the same way every tim
 
 `./rebuild.sh` builds:
 
-- **System** — dark mode, fast key repeat, auto-hide dock + menu bar, Finder list view, tap-to-click, Caps Lock → Escape, hostname `alex-m5`
+- **System** — dark mode, fast key repeat, auto-hide dock + menu bar, Finder list view, tap-to-click, Caps Lock → Escape, per-machine hostname
 - **Homebrew apps** — WezTerm, Ghostty, VS Code, Obsidian, OrbStack, Alfred, CleanShot X, Rectangle, Claude Code, herdr
 - **Nix CLI packages** — ripgrep, fd, fzf, jq, lazygit, Neovim, tmux, gh, Hack Nerd Font
 - **Shell** — zsh (autosuggestions, syntax highlighting), aliases, starship prompt
@@ -50,13 +50,21 @@ Edit the config in place, then apply:
 ./rebuild.sh
 ```
 
+`rebuild.sh` picks the `flake.nix` host entry matching this machine's current name. The first time you rename a machine (or set one up under a new name), pass the target name explicitly, since the machine's current name won't match the new entry yet:
+
+```sh
+./rebuild.sh alex-jxp
+```
+
+After that rebuild sets the name, plain `./rebuild.sh` auto-detects it.
+
 Not every change needs a rebuild — see [How the symlinks work](#how-the-symlinks-work).
 
 ### Validate without applying
 
 ```sh
 nix flake check --no-build
-nix build .#darwinConfigurations.mac.system --dry-run
+nix build .#darwinConfigurations.$(scutil --get LocalHostName).system --dry-run
 ```
 
 ## SSH key (one-time, per machine)
@@ -97,8 +105,7 @@ Files under `home/` are the real files — editing them here edits your live con
 These are my personal dotfiles, public so people can read and fork them. If you clone for yourself, change:
 
 - **Username** — `./bootstrap.sh` detects and offers to set it, or edit the single `user = "alexliu"` line in `flake.nix`. Everything else threads from that one variable.
-- **Machine name** — `networking.computerName` / `networking.hostName = "alex-m5"` in `configuration.nix`.
-- **Host label `"mac"`** — the `darwinConfigurations."mac"` name in `flake.nix`, plus the `#mac` in `rebuild.sh` and `bootstrap.sh`. All three must match.
+- **Machine names** — the `hosts` list in `flake.nix`. Each entry is a hostname a machine gets (`networking.hostName` / `computerName`), so every Mac needs its own distinct name or they collide on the network. `rebuild.sh` auto-selects the entry matching the machine's current name; add a machine by adding its name to the list.
 - **Git identity** — `programs.git.settings.user` in `home.nix` is mine; set your own.
 - **`home/AGENTS.md`** — my personal agent policy, installed for Claude, Codex, and opencode. Edit or delete it, or you'll silently inherit my instructions.
 - **CPU architecture** — `hostPlatform` in `configuration.nix` (see Prerequisites).

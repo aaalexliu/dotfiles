@@ -12,17 +12,37 @@
     home-manager.inputs.nixpkgs.follows = "nixpkgs";
 
     nix-homebrew.url = "github:zhaofengli/nix-homebrew";
+    # Pin the Homebrew CLI ourselves instead of inheriting nix-homebrew's bundled
+    # revision. That bundled pin drifts: brew's cask metadata auto-updates from
+    # the API, but the immutable nix-store brew binary does not, so over time an
+    # old brew can't parse newer cask definitions (e.g. it links completions
+    # before the app, or errors "unknown install step: run"). Bump with
+    # `nix flake update homebrew-brew` when a cask install breaks that way.
+    homebrew-brew = {
+      url = "github:Homebrew/brew";
+      flake = false;
+    };
+    nix-homebrew.inputs.brew-src.follows = "homebrew-brew";
   };
 
-  outputs = inputs@{ self, nix-darwin, nix-homebrew, home-manager, nixpkgs }:
+  outputs = inputs@{ self, nix-darwin, nix-homebrew, home-manager, nixpkgs, ... }:
     let
       # The one username line to change if this isn't your machine.
       # bootstrap.sh offers to rewrite this for you if your macOS username differs.
       user = "alexliu";
-    in
-    {
-      darwinConfigurations."mac" = nix-darwin.lib.darwinSystem {
-        specialArgs = { inherit user; };
+
+      # One entry per physical machine. The attribute name IS the hostname the
+      # machine gets (networking.hostName / computerName), so each Mac needs its
+      # own distinct name here or they collide on the network (.local, AirDrop).
+      # rebuild.sh selects the entry matching the machine's current hostname, so
+      # to add a machine you just add its name to this list.
+      hosts = [
+        "alex-jxp"  # this machine (M5)
+        "alex-m5"   # other machine
+      ];
+
+      mkHost = hostName: nix-darwin.lib.darwinSystem {
+        specialArgs = { inherit user hostName; };
         modules = [
           ./configuration.nix
           nix-homebrew.darwinModules.nix-homebrew
@@ -39,5 +59,8 @@
           }
         ];
       };
+    in
+    {
+      darwinConfigurations = nixpkgs.lib.genAttrs hosts mkHost;
     };
 }
