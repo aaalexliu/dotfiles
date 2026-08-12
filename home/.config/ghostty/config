@@ -1,3 +1,13 @@
 # Ghostty config - reset to defaults
 # Use 'theme = light' or 'theme = dark' if you want to set a theme
 # Or remove this line to use system default
+
+# Notifications
+# Let programs raise real macOS notifications via OSC 777 / OSC 9.
+# Claude Code uses this when preferredNotifChannel = "ghostty".
+desktop-notifications = true
+
+# What a terminal bell (BEL) does. Defaults are attention + title only,
+# which is silent. Adding `system` gives the macOS alert sound, and
+# `border` highlights the specific split that rang.
+bell-features = system,attention,title,border
