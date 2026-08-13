@@ -2,6 +2,36 @@
 
 let
   dotfiles = "${config.home.homeDirectory}/.dotfiles";
+
+  # Persists AI assistant session IDs across tmux restarts and resumes them
+  # with --resume <id>. Upstream ships as a TPM plugin; packaging it with
+  # mkTmuxPlugin means run-shell executes the same .tmux entry point TPM would,
+  # so upstream keeps owning the @resurrect-hook-* wiring.
+  tmux-assistant-resurrect = pkgs.tmuxPlugins.mkTmuxPlugin {
+    pluginName = "tmux-assistant-resurrect";
+    # Default would be tmux_assistant_resurrect.tmux (dashes -> underscores).
+    rtpFilePath = "tmux-assistant-resurrect.tmux";
+    version = "0-unstable-2026-08-10";
+    src = pkgs.fetchFromGitHub {
+      owner = "timvw";
+      repo = "tmux-assistant-resurrect";
+      rev = "86fe250f3a992a7763b896714e942fd39dc6f202";
+      hash = "sha256-vzJsgDo4D9mhc8x9PvxAPuYsjnWl48gTjxxDYOTGmHY=";
+    };
+    # Disable only the Claude hook installer: it jq-rewrites
+    # ~/.claude/settings.json via `mv`, which would replace home-manager's
+    # symlink with a regular file. Those hooks are declared in Nix instead
+    # (see home/.claude/settings.json). Anchored to the bare call on its own
+    # line so the function definition above it is untouched.
+    postInstall = ''
+      sed -i 's|^install_claude_hooks$|: # disabled: hooks declared in home.nix|' \
+        $target/tmux-assistant-resurrect.tmux
+    '';
+  };
+
+  # Stable path indirection: ~/.claude/settings.json must reference the hook
+  # scripts by a path that does not change on every rebuild.
+  assistantResurrectDir = "${config.home.homeDirectory}/.config/tmux/assistant-resurrect";
 in
 
 {
@@ -46,7 +76,10 @@ in
       push = "git push";
       pull = "git pull";
       m = "git switch main";
-      cc = "claude --dangerously-skip-permissions";
+      # Route coding agents through lapdog for tracing/instrumentation.
+      claude = "lapdog claude";
+      pi = "lapdog pi";
+      cc = "lapdog claude --dangerously-skip-permissions";
       co = "codex --full-auto";
     };
   };
@@ -130,8 +163,38 @@ in
     config.lib.file.mkOutOfStoreSymlink "${dotfiles}/home/.config/ghostty";
   home.file.".tmux.conf".source =
     config.lib.file.mkOutOfStoreSymlink "${dotfiles}/home/.tmux.conf";
+
+  # Nix-owned tmux plugin bootstrap (replaces TPM). Sourced by ~/.tmux.conf so
+  # the main config stays editable without a rebuild.
+  home.file.".config/tmux/plugins.conf".text = ''
+    set -g @resurrect-dir '~/.tmux/resurrect'
+    set -g @continuum-restore 'on'
+    set -g @continuum-save-interval '10'
+
+    # Restore scrollback in ordinary panes. The assistant save hook strips
+    # captured contents for assistant panes so restore does not flash stale TUI.
+    set -g @resurrect-capture-pane-contents 'on'
+
+    # Deliberately NOT listing claude/pi/codex here: that would launch bare
+    # binaries with no session ID, and the post-restore hook would then type
+    # resume commands into an already-running TUI. The hooks below do the
+    # resuming, with the real session IDs.
+    set -g @resurrect-processes 'nvim "~ssh" lazygit'
+
+    # Load order matters. continuum must be last: it performs its auto-restore
+    # the moment it loads, so the assistant plugin has to have set
+    # @resurrect-hook-post-restore-all before that happens.
+    run-shell ${pkgs.tmuxPlugins.resurrect.rtp}
+    run-shell ${tmux-assistant-resurrect.rtp}
+    run-shell ${pkgs.tmuxPlugins.continuum.rtp}
+  '';
   home.file.".claude/settings.json".source =
     config.lib.file.mkOutOfStoreSymlink "${dotfiles}/home/.claude/settings.json";
+
+  # Stable symlink -> pinned plugin dir, referenced by the Claude
+  # SessionStart/SessionEnd hooks in home/.claude/settings.json.
+  home.file.".config/tmux/assistant-resurrect".source =
+    "${tmux-assistant-resurrect}/share/tmux-plugins/tmux-assistant-resurrect";
 
   home.file.".claude/CLAUDE.md".source =
     config.lib.file.mkOutOfStoreSymlink "${dotfiles}/home/AGENTS.md";
