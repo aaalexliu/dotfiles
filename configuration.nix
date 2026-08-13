@@ -63,11 +63,17 @@
   };
   homebrew = {
     enable = true;
-    onActivation.cleanup = "zap";  # remove anything not listed here
+    # "none": this list is a baseline, not the full set. Manually-installed or
+    # MDM-managed brew packages (e.g. twingate) are left alone on rebuild.
+    onActivation.cleanup = "none";
     onActivation.autoUpdate = true;
+    taps = [
+      "datadog/lapdog"
+    ];
     brews = [
       "herdr"
       "mise"  # runtime version manager, activated in ~/.zshrc via home.nix
+      "datadog/lapdog/lapdog"  # traces claude/pi sessions; see aliases in home.nix
     ];
     casks = [
       "wezterm"
