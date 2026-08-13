@@ -74,6 +74,7 @@
       "herdr"
       "mise"  # runtime version manager, activated in ~/.zshrc via home.nix
       "datadog/lapdog/lapdog"  # traces claude/pi sessions; see aliases in home.nix
+      "pi-coding-agent"  # `pi`; on PATH for non-interactive shells so lapdog can exec it
     ];
     casks = [
       "wezterm"
