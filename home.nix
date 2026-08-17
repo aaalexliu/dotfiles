@@ -104,6 +104,7 @@ in
     ffmpeg    # media transcoding
     mkcert    # local trusted TLS certs
     yt-dlp    # media downloader
+    pi-coding-agent  # pi ai coding agent cli
     # the font everything renders in
     nerd-fonts.hack
   ];
