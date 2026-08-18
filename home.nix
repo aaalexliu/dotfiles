@@ -61,6 +61,8 @@ in
   ];
   fonts.fontconfig.enable = true;
   home.sessionVariables.EDITOR = "nvim";
+  # Where `uv tool install` puts executables (jxp, ruff, ...).
+  home.sessionPath = [ "$HOME/.local/bin" ];
 
   programs.zsh = {
     enable = true;
