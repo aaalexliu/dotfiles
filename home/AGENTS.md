@@ -25,4 +25,18 @@ Everything a user reads follows Orwell's six rules: docs, comments, commit messa
 5. Avoid jargon: never use a foreign phrase, scientific word, or jargon if an everyday English word works.
 6. Break the rules: break any of these rules before writing anything totally absurd or ugly.
 
+### Plain English in practice
+
+- One idea per sentence.
+- Prefer a plain verb over a nominalisation: "we changed X", not "a modification was applied to X".
+- Cut hedges that add no information ("it's worth noting that", "essentially", "in order to").
+- Name the thing instead of gesturing at it: "the `rewrite.sh` hook", not "the relevant component".
+- Do not pad an answer to look thorough. Length is not evidence of care.
+- Keep every fact, name, number, link, and file path. Simplifying is not the same as dropping detail.
+- Keep technical terms, commands, and identifiers in their original form.
+  Do not translate or paraphrase `--flag`, `snake_case_name`, or `src/main.py`.
+- Leave fenced code blocks unchanged. Reproduce them exactly. Same for YAML frontmatter.
+- Keep Markdown structure: headings, lists, tables, links.
+- Output only the text itself - no preamble, no labels, no commentary about what you just did.
+
 
