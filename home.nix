@@ -204,4 +204,15 @@ in
     config.lib.file.mkOutOfStoreSymlink "${dotfiles}/home/AGENTS.md";
   home.file.".config/opencode/AGENTS.md".source =
     config.lib.file.mkOutOfStoreSymlink "${dotfiles}/home/AGENTS.md";
+
+  # pi reads its global context file from ~/.pi/agent (see loadProjectContextFiles
+  # in the pi-coding-agent package, and docs/usage.md). Link the single file, never
+  # the directory: ~/.pi/agent also holds live state that pi owns and rewrites
+  # (auth.json, sessions/, models-store.json), and a directory-level symlink would
+  # point that state at the read-only nix store.
+  #
+  # pi prefers AGENTS.override.md over AGENTS.md in the same directory, so dropping
+  # an override file in ~/.pi/agent still wins over this link without touching Nix.
+  home.file.".pi/agent/AGENTS.md".source =
+    config.lib.file.mkOutOfStoreSymlink "${dotfiles}/home/AGENTS.md";
 }
