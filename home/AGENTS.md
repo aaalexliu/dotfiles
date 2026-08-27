@@ -14,4 +14,15 @@
 - When creating git worktrees, name the directory `<repo>-<last-segment-of-branch-name>` as a sibling of the repo.
   Example: repo `tetra-monorepo`, branch `feature/ndbh-http-fill-step` -> `../tetra-monorepo-http-fill-step`.
 
+## Writing style
+
+Everything a user reads follows Orwell's six rules: docs, comments, commit messages, and chat responses alike.
+
+1. Avoid old clichés: never use a familiar metaphor, simile, or figure of speech you often see in print.
+2. Keep words short: never use a long word when a short one works.
+3. Cut extra words: remove any word if you can delete it without losing meaning.
+4. Use active voice: never use the passive voice when you can use the active voice.
+5. Avoid jargon: never use a foreign phrase, scientific word, or jargon if an everyday English word works.
+6. Break the rules: break any of these rules before writing anything totally absurd or ugly.
+
 
