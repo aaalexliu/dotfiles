@@ -7,19 +7,9 @@ Deliberate decisions in this repo - do NOT silently revert them:
 
 ## Writing style
 
-Everything a user reads follows Orwell's six rules: docs, comments, commit messages, and chat responses alike.
+`home/AGENTS.md` ships Orwell's six rules to every agent, this repo included. Do not restate them here. What they leave open:
 
-1. Never use a metaphor, simile, or other figure of speech you are used to seeing in print.
-2. Never use a long word where a short one will do.
-3. If it is possible to cut a word out, cut it out.
-4. Never use the passive where you can use the active.
-5. Never use a foreign phrase, a scientific word, or a jargon word if an everyday English word will do.
-6. Break any of these rules sooner than say anything outright barbarous.
-
-Rule 6 rules out caveman-style compression. Dropped articles save tokens and cost readers.
-
-Also:
-
+- Rule 6 rules out caveman-style compression. Dropped articles save tokens and cost readers.
 - Never shorten a security note or an irreversible-action confirmation, whatever else you are cutting.
 - Never invent abbreviations. `cfg`, `impl`, `req`, and `fn` cost the same tokens as the full word and read worse.
 - Before shipping a doc, hand it to a fresh agent with no context and fix what it misreads.
