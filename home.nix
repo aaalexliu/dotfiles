@@ -205,6 +205,11 @@ in
   home.file.".config/opencode/AGENTS.md".source =
     config.lib.file.mkOutOfStoreSymlink "${dotfiles}/home/AGENTS.md";
 
+  # Agent Skills uses ~/.agents/skills as a cross-harness global location.
+  # Link each personal skill separately so package-managed skills can coexist.
+  home.file.".agents/skills/pi-docs".source =
+    config.lib.file.mkOutOfStoreSymlink "${dotfiles}/home/.agents/skills/pi-docs";
+
   # pi reads its global context file from ~/.pi/agent (see loadProjectContextFiles
   # in the pi-coding-agent package, and docs/usage.md). Link the single file, never
   # the directory: ~/.pi/agent also holds live state that pi owns and rewrites
