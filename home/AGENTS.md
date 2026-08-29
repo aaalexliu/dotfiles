@@ -13,8 +13,8 @@
   If you see one, even if it is not caused by what you are working on right now, still get it fixed.
 - When creating git worktrees, name the directory `<repo>-<last-segment-of-branch-name>` as a sibling of the repo.
   Example: repo `tetra-monorepo`, branch `feature/ndbh-http-fill-step` -> `../tetra-monorepo-http-fill-step`.
-- For Pi questions (models, providers, extensions, commands), read the Pi docs bundled
-  in the system prompt before anything else. Do not explore local config files or
+- For Pi questions (models, providers, extensions, commands), read and follow the
+  `pi-docs` skill before anything else. Do not explore local config files or
   reverse-engineer internals when the docs already have the answer.
 - After editing this file, commit and push in `~/dev/dotfiles` so the change persists
   across Home Manager rebuilds.
