@@ -43,4 +43,20 @@ Use the `read` tool to read Markdown files completely. Follow links to related l
 
 Start with `README.md` when the question spans several topics or the right topic file is unclear.
 
-Do not inspect project files, local Pi state, or private auth files when the bundled docs answer the question. Never print or read `~/.pi/agent/auth.json` while researching Pi usage.
+## Parent session lookup
+
+Pi has no documented command that shows a session's parent ID. `/session` shows the current session file path. Read the first JSONL line at that path and extract `parentSession`:
+
+```bash
+head -n 1 /path/to/session.jsonl | jq -r '
+  if .parentSession then
+    (.parentSession | split("_")[-1] | rtrimstr(".jsonl"))
+  else
+    "none"
+  end
+'
+```
+
+The session header only has `parentSession` when `/fork`, `/clone`, or `newSession({ parentSession })` created it.
+
+Do not inspect project files, local Pi state, or private auth files when the bundled docs answer the question. Reading a session header is appropriate when the user asks about a specific session. Never print or read `~/.pi/agent/auth.json` while researching Pi usage.
