@@ -78,7 +78,17 @@ in
     jq        # json on the command line
     lazygit
     neovim
-    tmux
+    (tmux.overrideAttrs (finalAttrs: previousAttrs: {
+      version = "3.7c";
+      src = pkgs.fetchurl {
+        url = "https://github.com/tmux/tmux/releases/download/${finalAttrs.version}/tmux-${finalAttrs.version}.tar.gz";
+        hash = "sha256-fGDK6aDiUoji4kdQqvyeiAD8f9RVXkR+GynuQgHPs78=";
+      };
+      # 3.7c includes the control-notify-uninitialized fix.
+      patches = [ ];
+      buildInputs = previousAttrs.buildInputs ++ [ pkgs.jemalloc ];
+      configureFlags = previousAttrs.configureFlags ++ [ "--enable-jemalloc" ];
+    }))
     gh        # github cli
     # portable cli i want reproducible across machines
     awscli2   # aws cli
