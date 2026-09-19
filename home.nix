@@ -1,7 +1,39 @@
-{ config, pkgs, user, ... }:
+{ config, lib, pkgs, user, ... }:
 
 let
   dotfiles = "${config.home.homeDirectory}/.dotfiles";
+
+  piModelSettings = pkgs.writeText "pi-model-settings.json" (builtins.toJSON {
+    defaultProvider = "openai-codex";
+    defaultModel = "gpt-6-astra";
+    defaultThinkingLevel = "low";
+    modelThinkingLevels = {
+      "openai-codex/gpt-6-astra" = "low";
+      "anthropic/claude-fable-5-1" = "high";
+    };
+    enabledModels = [
+      "openai-codex/gpt-6-astra:low"
+      "anthropic/claude-fable-5-1:high"
+      "cursor/grok-4.5"
+    ];
+  });
+
+  configurePiModels = pkgs.writeShellScript "configure-pi-models" ''
+    set -euo pipefail
+    export PATH=${lib.makeBinPath [ pkgs.coreutils pkgs.jq ]}
+    settings="$1/settings.json"
+    mkdir -p "$1"
+    tmp=$(mktemp "$settings.XXXXXX")
+    trap 'rm -f "$tmp"' EXIT
+    if [ -e "$settings" ]; then
+      jq -e -s 'if (length == 2 and all(.[]; type == "object")) then .[0] * .[1] else error("Expected settings objects") end' \
+        "$settings" ${piModelSettings} > "$tmp"
+    else
+      cp ${piModelSettings} "$tmp"
+    fi
+    chmod 600 "$tmp"
+    mv "$tmp" "$settings"
+  '';
 
   # Persists AI assistant session IDs across tmux restarts and resumes them
   # with --resume <id>. Upstream ships as a TPM plugin; packaging it with
@@ -209,6 +241,11 @@ in
   # Link each personal skill separately so package-managed skills can coexist.
   home.file.".agents/skills/pi-docs".source =
     config.lib.file.mkOutOfStoreSymlink "${dotfiles}/home/.agents/skills/pi-docs";
+
+  # Pi rewrites settings.json. Merge owned keys and keep its other preferences.
+  home.activation.piModels = lib.hm.dag.entryAfter [ "writeBoundary" ] ''
+    run ${configurePiModels} ${lib.escapeShellArg "${config.home.homeDirectory}/.pi/agent"}
+  '';
 
   # pi reads its global context file from ~/.pi/agent (see loadProjectContextFiles
   # in the pi-coding-agent package, and docs/usage.md). Link the single file, never
