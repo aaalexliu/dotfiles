@@ -96,6 +96,8 @@ Files under `home/` are the real files — editing them here edits your live con
 
 ## Notes
 
+- Pi starts new sessions with Astra (`openai-codex/gpt-6-astra`) on low thinking. Ctrl+P cycles through Astra low, Fable 5.1 (`anthropic/claude-fable-5-1`) high, and Grok 4.5 (`cursor/grok-4.5`). `home.nix` merges these model settings into `~/.pi/agent/settings.json` on each rebuild, keeping packages and other preferences. Restart Pi after applying changes.
+
 - **`homebrew.onActivation.cleanup = "zap"`** — every switch removes any brew or cask not listed in `configuration.nix`. Add anything you want to keep to `brews`/`casks` first.
 - First `nvim` launch bootstraps [lazy.nvim](https://github.com/folke/lazy.nvim) by cloning plugins (needs network once, then offline). Neovim + WezTerm both use the rose-pine moon theme.
 - The `cc`/`co` shell aliases are high-agency: `claude --dangerously-skip-permissions` and `codex --full-auto`. Know what they do before using them.
