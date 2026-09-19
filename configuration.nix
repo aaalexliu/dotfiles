@@ -80,6 +80,7 @@
       "wezterm"
       "claude"
       "claude-code"
+      "cursor-cli"
       "obsidian"
       "orbstack"
       "visual-studio-code"
