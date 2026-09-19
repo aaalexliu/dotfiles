@@ -84,6 +84,7 @@
       "orbstack"
       "visual-studio-code"
       "ghostty"
+      "cmux"
       "alfred"
       "cleanshot"
       "rectangle"
@@ -92,6 +93,10 @@
       "session-manager-plugin"  # aws ssm session manager
     ];
   };
+
+  system.activationScripts.postActivation.text = ''
+    sudo -H -u ${user} /Applications/cmux.app/Contents/Resources/bin/cmux hooks pi install --yes
+  '';
 
   # Launch these apps at login. nix-darwin has no native "login items" option,
   # so we use per-user launch agents that `open -b <bundle-id>` once at login.
