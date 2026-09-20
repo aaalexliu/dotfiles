@@ -18,6 +18,9 @@
 - For Pi questions (models, providers, extensions, commands), read and follow the
   `pi-docs` skill before anything else. Do not explore local config files or
   reverse-engineer internals when the docs already have the answer.
+- Use the `anthropic` connector for Anthropic models, including Fable, Opus, Sonnet,
+  and Haiku. Use the `openai-codex` connector for Codex models. Never select these
+  models through `cursor`, including for subagents.
 - After editing this file, commit and push in `~/dev/dotfiles` so the change persists
   across Home Manager rebuilds.
 
