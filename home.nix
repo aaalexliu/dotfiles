@@ -10,11 +10,13 @@ let
     modelThinkingLevels = {
       "openai-codex/gpt-6-astra" = "low";
       "anthropic/claude-fable-5-1" = "high";
+      "cursor/grok-4.5" = "high";
     };
     enabledModels = [
       "openai-codex/gpt-6-astra:low"
       "anthropic/claude-fable-5-1:high"
-      "cursor/grok-4.5"
+      "cursor/grok-4.7@256k:slow"
+      "cursor/grok-4.5:high"
     ];
   });
 
