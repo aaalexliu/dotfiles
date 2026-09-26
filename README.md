@@ -96,7 +96,7 @@ Files under `home/` are the real files — editing them here edits your live con
 
 ## Notes
 
-- Pi starts new sessions with Astra (`openai-codex/gpt-6-astra`) on low thinking. Ctrl+P cycles through Astra low, Fable 5.1 (`anthropic/claude-fable-5-1`) high, Grok 4.7 256K slow (`cursor/grok-4.7@256k:slow`), and Grok 4.5 (`cursor/grok-4.5`) high. Grok 4.7 has no adjustable thinking level in Pi. `home.nix` merges these model settings into `~/.pi/agent/settings.json` on each rebuild, keeping packages and other preferences. Restart Pi after applying changes.
+- Pi starts new sessions on Grok 4.5 (`cursor/grok-4.5`) medium. Ctrl+P cycles: Grok 4.5 medium → GPT-6 Sol low (`openai-codex/gpt-6-sol`) → Grok 4.7 256K slow (`cursor/grok-4.7@256k:slow`) → Opus 5.5 medium (`anthropic/claude-opus-5-5`) → Astra low (`openai-codex/gpt-6-astra`) → Fable 5.1 high (`anthropic/claude-fable-5-1`). Grok 4.7 has no adjustable thinking level in Pi (`:slow` is the Cursor fast=false alias; API effort defaults to high). `home.nix` merges these model settings into `~/.pi/agent/settings.json` on each rebuild, keeping packages and other preferences. Restart Pi after applying changes.
 
 - **`homebrew.onActivation.cleanup = "zap"`** — every switch removes any brew or cask not listed in `configuration.nix`. Add anything you want to keep to `brews`/`casks` first.
 - First `nvim` launch bootstraps [lazy.nvim](https://github.com/folke/lazy.nvim) by cloning plugins (needs network once, then offline). Neovim + WezTerm both use the rose-pine moon theme.

@@ -4,19 +4,23 @@ let
   dotfiles = "${config.home.homeDirectory}/.dotfiles";
 
   piModelSettings = pkgs.writeText "pi-model-settings.json" (builtins.toJSON {
-    defaultProvider = "openai-codex";
-    defaultModel = "gpt-6-astra";
-    defaultThinkingLevel = "low";
+    defaultProvider = "cursor";
+    defaultModel = "grok-4.5";
+    defaultThinkingLevel = "medium";
     modelThinkingLevels = {
+      "cursor/grok-4.5" = "medium";
+      "anthropic/claude-opus-5-5" = "medium";
+      "openai-codex/gpt-6-sol" = "low";
       "openai-codex/gpt-6-astra" = "low";
       "anthropic/claude-fable-5-1" = "high";
-      "cursor/grok-4.5" = "high";
     };
     enabledModels = [
+      "cursor/grok-4.5:medium"
+      "openai-codex/gpt-6-sol:low"
+      "cursor/grok-4.7@256k:slow"
+      "anthropic/claude-opus-5-5:medium"
       "openai-codex/gpt-6-astra:low"
       "anthropic/claude-fable-5-1:high"
-      "cursor/grok-4.7@256k:slow"
-      "cursor/grok-4.5:high"
     ];
   });
 
