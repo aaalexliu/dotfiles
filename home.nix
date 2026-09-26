@@ -3,6 +3,9 @@
 let
   dotfiles = "${config.home.homeDirectory}/.dotfiles";
 
+  # Own model cycle + package list. Packages stay unpinned so `pi update
+  # --extensions` can move them; Homebrew owns the `pi` binary itself
+  # (configuration.nix) — nixpkgs' pi-coding-agent lags badly.
   piModelSettings = pkgs.writeText "pi-model-settings.json" (builtins.toJSON {
     defaultProvider = "cursor";
     defaultModel = "grok-4.5";
@@ -22,6 +25,14 @@ let
       "openai-codex/gpt-6-astra:low"
       "anthropic/claude-fable-5-1:high"
     ];
+    packages = [
+      "npm:pi-web-search"
+      "npm:@latentminds/pi-quotas"
+      "npm:@gotgenes/pi-anthropic-auth"
+      "npm:@narumitw/pi-caffeinate"
+      "https://github.com/aaalexliu/pstack-pi"
+      "git:github.com/aaalexliu/pi-cursor-sdk"
+    ];
   });
 
   configurePiModels = pkgs.writeShellScript "configure-pi-models" ''
@@ -39,6 +50,17 @@ let
     fi
     chmod 600 "$tmp"
     mv "$tmp" "$settings"
+  '';
+
+  # Homebrew formula disables pi self-update (PI_SKIP_VERSION_CHECK=1), and
+  # brew bundle does not always upgrade already-installed formulae. Pull the
+  # latest bottle, then reconcile unpinned packages to tip. Activation PATH is
+  # minimal — include git so `pi update` can fetch git: packages (else ENOENT).
+  upgradePi = pkgs.writeShellScript "upgrade-pi" ''
+    set -euo pipefail
+    export PATH=/opt/homebrew/bin:${lib.makeBinPath [ pkgs.coreutils pkgs.git ]}
+    brew upgrade pi-coding-agent
+    pi update --extensions --no-approve
   '';
 
   # Persists AI assistant session IDs across tmux restarts and resumes them
@@ -104,7 +126,6 @@ in
     ffmpeg    # media transcoding
     mkcert    # local trusted TLS certs
     yt-dlp    # media downloader
-    pi-coding-agent  # pi ai coding agent cli
     # the font everything renders in
     nerd-fonts.hack
   ];
@@ -262,6 +283,10 @@ in
   # Pi rewrites settings.json. Merge owned keys and keep its other preferences.
   home.activation.piModels = lib.hm.dag.entryAfter [ "writeBoundary" ] ''
     run ${configurePiModels} ${lib.escapeShellArg "${config.home.homeDirectory}/.pi/agent"}
+  '';
+
+  home.activation.piLatest = lib.hm.dag.entryAfter [ "piModels" ] ''
+    run ${upgradePi}
   '';
 
   # pi reads its global context file from ~/.pi/agent (see loadProjectContextFiles
