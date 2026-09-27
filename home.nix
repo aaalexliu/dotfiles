@@ -7,20 +7,21 @@ let
   # --extensions` can move them; Homebrew owns the `pi` binary itself
   # (configuration.nix) — nixpkgs' pi-coding-agent lags badly.
   piModelSettings = pkgs.writeText "pi-model-settings.json" (builtins.toJSON {
-    defaultProvider = "cursor";
+    defaultProvider = "xai";
     defaultModel = "grok-4.5";
     defaultThinkingLevel = "medium";
     modelThinkingLevels = {
-      "cursor/grok-4.5" = "medium";
+      "xai/grok-4.5" = "medium";
+      "xai/grok-4.7" = "high";
       "anthropic/claude-opus-5-5" = "medium";
       "openai-codex/gpt-6-sol" = "low";
       "openai-codex/gpt-6-astra" = "low";
       "anthropic/claude-fable-5-1" = "high";
     };
     enabledModels = [
-      "cursor/grok-4.5:medium"
+      "xai/grok-4.5:medium"
+      "xai/grok-4.7:high"
       "openai-codex/gpt-6-sol:low"
-      "cursor/grok-4.7@256k:slow"
       "anthropic/claude-opus-5-5:medium"
       "openai-codex/gpt-6-astra:low"
       "anthropic/claude-fable-5-1:high"
