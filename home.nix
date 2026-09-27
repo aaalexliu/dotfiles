@@ -53,6 +53,32 @@ let
     mv "$tmp" "$settings"
   '';
 
+  # pstack role map. Install as a regular 0600 file (not a symlink): runtime
+  # routing only needs a readable file, and setup-pstack refuses to write through
+  # a symlink. Rebuild overwrites local drift so machines stay aligned.
+  piPstackModels = ./home/.pi/agent/pstack-pi/models.json;
+
+  configurePstackModels = pkgs.writeShellScript "configure-pstack-models" ''
+    set -euo pipefail
+    export PATH=${lib.makeBinPath [ pkgs.coreutils ]}
+    agent_dir="$1"
+    dest="$agent_dir/pstack-pi/models.json"
+    mkdir -p "$agent_dir/pstack-pi"
+    if [ -e "$dest" ] && [ ! -f "$dest" ]; then
+      echo "refusing to overwrite non-regular pstack models path: $dest" >&2
+      exit 1
+    fi
+    if [ -L "$dest" ]; then
+      echo "refusing to overwrite symlink: $dest" >&2
+      exit 1
+    fi
+    tmp=$(mktemp "$dest.XXXXXX")
+    trap 'rm -f "$tmp"' EXIT
+    cp ${piPstackModels} "$tmp"
+    chmod 600 "$tmp"
+    mv "$tmp" "$dest"
+  '';
+
   # Homebrew formula disables pi self-update (PI_SKIP_VERSION_CHECK=1), and
   # brew bundle does not always upgrade already-installed formulae. Pull the
   # latest bottle, then reconcile unpinned packages to tip. Activation PATH is
@@ -286,7 +312,11 @@ in
     run ${configurePiModels} ${lib.escapeShellArg "${config.home.homeDirectory}/.pi/agent"}
   '';
 
-  home.activation.piLatest = lib.hm.dag.entryAfter [ "piModels" ] ''
+  home.activation.piPstackModels = lib.hm.dag.entryAfter [ "writeBoundary" ] ''
+    run ${configurePstackModels} ${lib.escapeShellArg "${config.home.homeDirectory}/.pi/agent"}
+  '';
+
+  home.activation.piLatest = lib.hm.dag.entryAfter [ "piModels" "piPstackModels" ] ''
     run ${upgradePi}
   '';
 
