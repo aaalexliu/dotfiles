@@ -28,7 +28,6 @@ let
       "anthropic/claude-fable-5-1:high"
     ];
     packages = [
-      "npm:pi-web-search"
       "npm:pi-mcp-extension"
       "npm:pi-web-access"
       "npm:@latentminds/pi-quotas"
