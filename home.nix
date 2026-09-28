@@ -3,7 +3,6 @@
 let
   dotfiles = "${config.home.homeDirectory}/.dotfiles";
 
-<<<<<<< HEAD
   # Own model cycle + package list. Packages stay unpinned so `pi update
   # --extensions` can move them; Homebrew owns the `pi` binary itself
   # (configuration.nix) — nixpkgs' pi-coding-agent lags badly. Force-replace
