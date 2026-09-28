@@ -68,7 +68,10 @@ let
         | map(select((package_id | IN($owned_ids[])) | not))
         | map(package_source)
         | .[]
-      ' "$settings" ${piModelSettings})
+      ' "$settings" ${piModelSettings}) || {
+        echo "warning: could not compare pi packages; continuing with the settings write" >&2
+        wiped=""
+      }
       if [ -n "$wiped" ]; then
         {
           echo "warning: pi packages not in home.nix will be removed from settings.json:"
