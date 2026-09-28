@@ -3,9 +3,11 @@
 let
   dotfiles = "${config.home.homeDirectory}/.dotfiles";
 
+<<<<<<< HEAD
   # Own model cycle + package list. Packages stay unpinned so `pi update
   # --extensions` can move them; Homebrew owns the `pi` binary itself
-  # (configuration.nix) — nixpkgs' pi-coding-agent lags badly.
+  # (configuration.nix) — nixpkgs' pi-coding-agent lags badly. Force-replace
+  # owned list/object fields on merge so live edits cannot drift them.
   piModelSettings = pkgs.writeText "pi-model-settings.json" (builtins.toJSON {
     defaultProvider = "xai";
     defaultModel = "grok-4.5";
@@ -13,16 +15,16 @@ let
     modelThinkingLevels = {
       "xai/grok-4.5" = "medium";
       "xai/grok-4.7" = "high";
-      "anthropic/claude-opus-5-5" = "medium";
-      "openai-codex/gpt-6-sol" = "low";
+      "openai-codex/gpt-6-sol" = "medium";
+      "anthropic/claude-opus-5-5" = "high";
       "openai-codex/gpt-6-astra" = "low";
       "anthropic/claude-fable-5-1" = "high";
     };
     enabledModels = [
       "xai/grok-4.5:medium"
       "xai/grok-4.7:high"
-      "openai-codex/gpt-6-sol:low"
-      "anthropic/claude-opus-5-5:medium"
+      "openai-codex/gpt-6-sol:medium"
+      "anthropic/claude-opus-5-5:high"
       "openai-codex/gpt-6-astra:low"
       "anthropic/claude-fable-5-1:high"
     ];
@@ -44,8 +46,41 @@ let
     tmp=$(mktemp "$settings.XXXXXX")
     trap 'rm -f "$tmp"' EXIT
     if [ -e "$settings" ]; then
-      jq -e -s 'if (length == 2 and all(.[]; type == "object")) then .[0] * .[1] else error("Expected settings objects") end' \
-        "$settings" ${piModelSettings} > "$tmp"
+      # Warn about packages that will disappear: compare by Pi package identity
+      # (npm name / git or https URL without ref), so unpinning the same source is quiet.
+      wiped=$(jq -r -s '
+        def package_source:
+          if type == "object" then (.source // empty) else . end;
+        def package_id:
+          package_source
+          | if type != "string" then empty
+            elif test("^git:") then sub("@[^/@]+$"; "")
+            elif test("^https?://") then sub("@[^/@]+$"; "")
+            elif test("^npm:@") then capture("^(?<id>npm:@[^@]+)").id
+            elif test("^npm:") then capture("^(?<id>npm:[^@]+)").id
+            else . end;
+        .[0] as $live | .[1] as $owned
+        | ($owned.packages // [] | map(package_id)) as $owned_ids
+        | ($live.packages // [])
+        | map(select((package_id | IN($owned_ids[])) | not))
+        | map(package_source)
+        | .[]
+      ' "$settings" ${piModelSettings})
+      if [ -n "$wiped" ]; then
+        echo "warning: pi packages not in home.nix will be removed from settings.json:" >&2
+        printf '%s\n' "$wiped" | sed 's/^/  - /' >&2
+        echo "  add them to home.nix packages (or reinstall after rebuild) to keep them." >&2
+      fi
+
+      jq -e -s '
+        if (length == 2 and all(.[]; type == "object")) then
+          .[0] as $live | .[1] as $owned
+          | ($live * $owned)
+          | .enabledModels = $owned.enabledModels
+          | .modelThinkingLevels = $owned.modelThinkingLevels
+          | .packages = $owned.packages
+        else error("Expected settings objects") end
+      ' "$settings" ${piModelSettings} > "$tmp"
     else
       cp ${piModelSettings} "$tmp"
     fi
