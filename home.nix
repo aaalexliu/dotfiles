@@ -29,6 +29,8 @@ let
     ];
     packages = [
       "npm:pi-web-search"
+      "npm:pi-mcp-extension"
+      "npm:pi-web-access"
       "npm:@latentminds/pi-quotas"
       "npm:@gotgenes/pi-anthropic-auth"
       "npm:@narumitw/pi-caffeinate"
@@ -45,30 +47,40 @@ let
     tmp=$(mktemp "$settings.XXXXXX")
     trap 'rm -f "$tmp"' EXIT
     if [ -e "$settings" ]; then
-      # Warn about packages that will disappear: compare by Pi package identity
-      # (npm name / git or https URL without ref), so unpinning the same source is quiet.
       wiped=$(jq -r -s '
         def package_source:
           if type == "object" then (.source // empty) else . end;
         def package_id:
           package_source
           | if type != "string" then empty
-            elif test("^git:") then sub("@[^/@]+$"; "")
-            elif test("^https?://") then sub("@[^/@]+$"; "")
-            elif test("^npm:@") then capture("^(?<id>npm:@[^@]+)").id
-            elif test("^npm:") then capture("^(?<id>npm:[^@]+)").id
-            else . end;
+            else
+              sub("@[^/@]+$"; "")
+              | if test("^git:github\\.com/") then sub("^git:"; "")
+                elif test("^https://github\\.com/") then sub("^https://"; "")
+                elif test("^http://github\\.com/") then sub("^http://"; "")
+                elif test("^npm:@") then capture("^(?<id>npm:@[^@]+)").id
+                elif test("^npm:") then capture("^(?<id>npm:[^@]+)").id
+                else . end
+            end;
         .[0] as $live | .[1] as $owned
         | ($owned.packages // [] | map(package_id)) as $owned_ids
         | ($live.packages // [])
         | map(select((package_id | IN($owned_ids[])) | not))
         | map(package_source)
         | .[]
-      ' "$settings" ${piModelSettings})
+      ' "$settings" ${piModelSettings}) || {
+        echo "warning: could not compare pi packages; continuing with the settings write" >&2
+        wiped=""
+      }
       if [ -n "$wiped" ]; then
-        echo "warning: pi packages not in home.nix will be removed from settings.json:" >&2
-        printf '%s\n' "$wiped" | sed 's/^/  - /' >&2
-        echo "  add them to home.nix packages (or reinstall after rebuild) to keep them." >&2
+        {
+          echo "warning: pi packages not in home.nix will be removed from settings.json:"
+          printf '%s\n' "$wiped" | while IFS= read -r pkg; do
+            [ -n "$pkg" ] || continue
+            printf '  - %s\n' "$pkg"
+          done
+          echo "  add them to home.nix packages (or reinstall after rebuild) to keep them."
+        } >&2 || echo "warning: could not list pi packages that will be removed" >&2
       fi
 
       jq -e -s '
