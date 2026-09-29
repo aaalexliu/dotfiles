@@ -21,6 +21,9 @@
 - Use the `anthropic` connector for Anthropic models, including Fable, Opus, Sonnet,
   and Haiku. Use the `openai-codex` connector for Codex models. Never select these
   models through `cursor`, including for subagents.
+- For Datadog, use `pup`. Do not search for a Datadog MCP, API keys, or CloudWatch first.
+- When the model is Grok, use `git` for the repository. Do not use the `origin` CLI,
+  even when `command -v origin` succeeds.
 - After editing this file, commit and push in `~/dev/dotfiles` so the change persists
   across Home Manager rebuilds.
 
