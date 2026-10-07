@@ -34,7 +34,6 @@ let
       "npm:@gotgenes/pi-anthropic-auth"
       "npm:@narumitw/pi-caffeinate"
       "https://github.com/aaalexliu/pstack-pi"
-      "git:github.com/aaalexliu/pi-cursor-sdk"
     ];
   });
 
