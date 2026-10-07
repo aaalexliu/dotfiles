@@ -19,9 +19,18 @@
   `pi-docs` skill before anything else. Do not explore local config files or
   reverse-engineer internals when the docs already have the answer.
 - Use the `anthropic` connector for Anthropic models, including Fable, Opus, Sonnet,
-  and Haiku. Use the `openai-codex` connector for Codex models. Never select these
-  models through `cursor`, including for subagents.
+  and Haiku. Use the `openai-codex` connector for Codex models.
 - For Datadog, use `pup`. Do not search for a Datadog MCP, API keys, or CloudWatch first.
+- For browser work, use `cmux browser` (see `cmux browser --help`). Open your own tab with
+  `cmux --json browser open <url> --focus false --profile jxp`, keep the returned `surface_ref`,
+  and pass `--surface` on every later command. Read pages with `snapshot --interactive` or
+  `get text body` before taking screenshots. If a site shows a login page, ask the user to
+  sign in in that tab.
+  Limits: it renders with WebKit, not Chrome, and it cannot list network requests, mock routes,
+  emulate offline, record traces or screencasts, or send raw mouse, keyboard or touch input.
+  If a limit blocks you, use the `chrome-devtools` CLI (Google's chrome-devtools-mcp) instead.
+  Start it with `chrome-devtools start --headless=false` so the user can sign in, and do not quit
+  that window, because logins do not survive a restart.
 - When the model is Grok, use `git` for the repository. Do not use the `origin` CLI,
   even when `command -v origin` succeeds.
 - After editing this file, commit and push in `~/dev/dotfiles` so the change persists
