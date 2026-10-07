@@ -2,12 +2,10 @@
   "version": 1,
   "roles": {
     "feature": [
-      "cursor/grok-4.7@256k",
       "anthropic/claude-opus-5-5",
       "openai-codex/gpt-6-sol"
     ],
     "refactoring": [
-      "cursor/grok-4.7@256k",
       "anthropic/claude-opus-5-5",
       "openai-codex/gpt-6-sol"
     ],
@@ -33,7 +31,6 @@
       "anthropic/claude-fable-5-1"
     ],
     "how-explorer": [
-      "cursor/grok-4.7@256k",
       "anthropic/claude-opus-5-5",
       "openai-codex/gpt-6-sol"
     ],
@@ -58,7 +55,6 @@
       "anthropic/claude-fable-5-1"
     ],
     "arena-runner": [
-      "cursor/grok-4.7@256k",
       "anthropic/claude-opus-5-5",
       "openai-codex/gpt-6-sol"
     ],
@@ -68,7 +64,6 @@
       "openai-codex/gpt-6-sol"
     ],
     "swarm-worker": [
-      "cursor/grok-4.7@256k",
       "anthropic/claude-opus-5-5",
       "openai-codex/gpt-6-sol"
     ],
@@ -81,12 +76,10 @@
     "no-comments": "openai-codex/gpt-6-luna",
     "review": "openai-codex/gpt-6-sol",
     "test": [
-      "cursor/grok-4.7@256k",
       "anthropic/claude-opus-5-5",
       "openai-codex/gpt-6-sol"
     ],
     "verify": [
-      "cursor/grok-4.7@256k",
       "anthropic/claude-opus-5-5",
       "openai-codex/gpt-6-sol"
     ]
