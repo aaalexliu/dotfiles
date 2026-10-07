@@ -351,6 +351,8 @@ in
   # Link each personal skill separately so package-managed skills can coexist.
   home.file.".agents/skills/pi-docs".source =
     config.lib.file.mkOutOfStoreSymlink "${dotfiles}/home/.agents/skills/pi-docs";
+  home.file.".agents/skills/alex-mode".source =
+    config.lib.file.mkOutOfStoreSymlink "${dotfiles}/home/.agents/skills/alex-mode";
 
   # Pi rewrites settings.json. Merge owned keys and keep its other preferences.
   home.activation.piModels = lib.hm.dag.entryAfter [ "writeBoundary" ] ''
