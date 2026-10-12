@@ -91,12 +91,13 @@ ssh -T git@github.com                             # verify
 
 Files under `home/` are the real files — editing them here edits your live config, no rebuild needed. `home.nix` uses `mkOutOfStoreSymlink` to point paths like `~/.config/nvim` straight at `home/.config/nvim`, so the two never drift.
 
-- **Instant (symlinked, no rebuild):** `home/.config/{wezterm,nvim,herdr}`, `home/.claude/settings.json`, `home/AGENTS.md`
+- **Instant (symlinked, no rebuild):** `home/.config/{wezterm,nvim,herdr}`, `home/.claude/settings.json`, `home/AGENTS.md`, `home/.pi/agent/mcp.json` (also linked at `~/.config/mcp/mcp.json`)
 - **Needs `./rebuild.sh`:** everything in `configuration.nix`, and the non-symlink parts of `home.nix` (packages, zsh, starship, git, ssh, Pi settings merge, pstack role map)
 
 ## Notes
 
 - Pi starts new sessions on Grok 4.5 medium (`xai/grok-4.5`). Ctrl+P cycles: Grok 4.5 medium → Grok 4.7 high (`xai/grok-4.7`) → GPT-6 Sol medium (`openai-codex/gpt-6-sol`) → Opus 5.5 high (`anthropic/claude-opus-5-5`) → Astra low (`openai-codex/gpt-6-astra`) → Fable 5.1 high (`anthropic/claude-fable-5-1`). `home.nix` merges model settings and the unpinned package list into `~/.pi/agent/settings.json` on each rebuild (replace, not append); activation warns if a live package would be wiped. Homebrew owns the `pi` binary (`configuration.nix`); each rebuild runs `brew upgrade pi-coding-agent` then `pi update --extensions` so CLI and packages track latest (Homebrew disables Pi's self-update). Restart Pi after applying changes. pstack role pools that include Grok 4.7 put `cursor/grok-4.7@256k` first (`feature`, `refactoring`, `how-explorer`, `arena-runner`, `swarm-worker`, `test`, `verify`). Source of truth is `home/.pi/agent/pstack-pi/models.json`; each rebuild installs it as a regular `0600` file at `~/.pi/agent/pstack-pi/models.json` (overwrites local drift). Edit the repo file, then `./rebuild.sh` - do not rely on hand-edits under `~/.pi/agent/pstack-pi/`.
+- MCP uses `npm:pi-mcp-adapter` plus `home/.pi/agent/mcp.json` (Linear, LaunchDarkly, Slack). Slack is the official hosted server at `https://mcp.slack.com/mcp` with Slack's published public client ID and `http://localhost:3118/callback`. After rebuild, run `/mcp-auth slack` (and re-auth Linear/LD if tokens do not import). Stay on current Homebrew Pi (1.x); 0.87 cannot use Pi-owned `~/.pi/agent/mcp.json` the same way.
 
 - **`homebrew.onActivation.cleanup = "zap"`** — every switch removes any brew or cask not listed in `configuration.nix`. Add anything you want to keep to `brews`/`casks` first.
 - First `nvim` launch bootstraps [lazy.nvim](https://github.com/folke/lazy.nvim) by cloning plugins (needs network once, then offline). Neovim + WezTerm both use the rose-pine moon theme.

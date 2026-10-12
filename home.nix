@@ -28,7 +28,10 @@ let
       "anthropic/claude-fable-5-1:high"
     ];
     packages = [
-      "npm:pi-mcp-extension"
+      # Official Slack MCP path (docs.slack.dev) and other remote MCP servers.
+      # Replaces pi-mcp-extension. Slack needs the fixed public clientId + :3118
+      # redirect in home/.pi/agent/mcp.json; bare auth:oauth is not enough.
+      "npm:pi-mcp-adapter"
       "npm:pi-web-access"
       "npm:@latentminds/pi-quotas"
       "npm:@gotgenes/pi-anthropic-auth"
@@ -352,6 +355,15 @@ in
     config.lib.file.mkOutOfStoreSymlink "${dotfiles}/home/.agents/skills/pi-docs";
   home.file.".agents/skills/alex-mode".source =
     config.lib.file.mkOutOfStoreSymlink "${dotfiles}/home/.agents/skills/alex-mode";
+
+  # MCP server list for pi-mcp-adapter. Same file under the standard MCP path and
+  # Pi's agent dir so both discovery roots stay aligned. Writable via the repo
+  # path (mkOutOfStoreSymlink); do not put secrets here - OAuth tokens live in
+  # the adapter keychain / Pi auth store after `/mcp-auth <server>`.
+  home.file.".pi/agent/mcp.json".source =
+    config.lib.file.mkOutOfStoreSymlink "${dotfiles}/home/.pi/agent/mcp.json";
+  home.file.".config/mcp/mcp.json".source =
+    config.lib.file.mkOutOfStoreSymlink "${dotfiles}/home/.pi/agent/mcp.json";
 
   # Pi rewrites settings.json. Merge owned keys and keep its other preferences.
   home.activation.piModels = lib.hm.dag.entryAfter [ "writeBoundary" ] ''
