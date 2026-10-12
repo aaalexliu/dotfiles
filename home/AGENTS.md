@@ -31,6 +31,7 @@
   If a limit blocks you, use the `chrome-devtools` CLI (Google's chrome-devtools-mcp) instead.
   Start it with `chrome-devtools start --headless=false` so the user can sign in, and do not quit
   that window, because logins do not survive a restart.
+- UI proof is a before and an after on the running local app or the dev app the user is signed into. Open those screenshots. A component preview, a unit test, or a harness page is not that proof. The picker fix was shown as a side-by-side Vite preview of `TemplatePicker`. That was rejected. The portal page was the proof that was missing.
 - When the model is Grok, use `git` for the repository. Do not use the `origin` CLI,
   even when `command -v origin` succeeds.
 - After editing this file, commit and push in `~/dev/dotfiles` so the change persists
