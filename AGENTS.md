@@ -3,7 +3,7 @@
 Deliberate decisions in this repo - do NOT silently revert them:
 
 - `homebrew.onActivation.cleanup = "zap"` in `configuration.nix` is intentional. It forces the good habit of declaring every Homebrew package in the Nix config instead of installing things ad-hoc, which keeps the machine reproducible. Do not soften it to `uninstall` or `none`. Users are warned about its effect in README.md; this note is for anyone tempted to change the setting itself.
-- `alex-mac-m1` is a locked-down agent box (README "Machines"). Every host shares `configuration.nix`, so never add file-sync, chat, mail, 2FA, or password-manager apps to the shared `casks`/`brews` lists.
+- `alex-m1` is a locked-down agent box (`machines/alex-m1.md`). Every host shares `configuration.nix`, so never add file-sync, chat, mail, 2FA, or password-manager apps to the shared `casks`/`brews` lists.
 - Never commit `.no-mistakes/` validation evidence to this public repo. `.no-mistakes/` is gitignored; if a validation pipeline stages evidence into a branch, drop it before merging.
 - The active `gh` account is usually `alex-jxp`, which can only read `aaalexliu/dotfiles`. Prefix `gh` writes (PR create, merge) with `GH_TOKEN=$(gh auth token --user aaalexliu)`. This repo is a fork of `kunchenguid/dotfiles`. In a fresh clone, run `gh repo set-default aaalexliu/dotfiles` first, or `gh` targets the upstream.
 
