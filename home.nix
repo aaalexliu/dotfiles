@@ -222,10 +222,8 @@ in
       push = "git push";
       pull = "git pull";
       m = "git switch main";
-      # Route coding agents through lapdog for tracing/instrumentation.
-      claude = "lapdog claude";
-      pi = "lapdog pi";
-      cc = "lapdog claude --dangerously-skip-permissions";
+      # lapdog tracing is opt-in: run `lapdog claude` or `lapdog pi` for a traced session.
+      cc = "claude --dangerously-skip-permissions";
       co = "codex --full-auto";
     };
   };
