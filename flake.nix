@@ -37,8 +37,9 @@
       # rebuild.sh selects the entry matching the machine's current hostname, so
       # to add a machine you just add its name to this list.
       hosts = [
-        "alex-jxp"  # this machine (M5)
-        "alex-m5"   # other machine
+        "alex-jxp"     # this machine (M5)
+        "alex-m5"      # other machine
+        "alex-mac-m1"  # M1 Pro agent box; see README "Machines"
       ];
 
       mkHost = hostName: nix-darwin.lib.darwinSystem {
