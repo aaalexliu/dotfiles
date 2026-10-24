@@ -1,4 +1,4 @@
-{ user, hostName, ... }:
+{ config, user, hostName, ... }:
 
 {
   # Determinate already manages the Nix daemon, so nix-darwin shouldn't.
@@ -61,6 +61,10 @@
     inherit user;
     autoMigrate = true;  # adopt an existing /opt/homebrew install instead of failing
   };
+  # nix-darwin's /etc/zshrc ran compinit before home-manager's ~/.zshrc grew
+  # fpath and ran it again, so every shell rebuilt the completion cache twice
+  # (about 0.9s). Keep only home-manager's run.
+  programs.zsh.enableGlobalCompInit = false;
   homebrew = {
     enable = true;
     # "none": this list is a baseline, not the full set. Manually-installed or
@@ -97,6 +101,10 @@
 
   system.activationScripts.postActivation.text = ''
     sudo -H -u ${user} /Applications/cmux.app/Contents/Resources/bin/cmux hooks pi install --yes
+    # nix-homebrew does not link brew's own zsh completion
+    # (https://github.com/zhaofengli/nix-homebrew/issues/77). Without this,
+    # the _brew link left by the old git install dangles and compinit errors.
+    sudo -H -u ${user} ln -sfn ${config.nix-homebrew.package}/completions/zsh/_brew /opt/homebrew/share/zsh/site-functions/_brew
   '';
 
   # Launch these apps at login. nix-darwin has no native "login items" option,
