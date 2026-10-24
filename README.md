@@ -4,7 +4,7 @@ My personal Mac setup, managed with [nix-darwin](https://github.com/nix-darwin/n
 One repo, one command, and a fresh Mac ends up configured the same way every time.
 
 > Forked from [kunchenguid/dotfiles](https://github.com/kunchenguid/dotfiles).
-> The original has a [walkthrough video](https://youtu.be/5N-okeDdIuI) and the rationale behind this structure — start there if you're learning how it fits together.
+> The original has a [walkthrough video](https://youtu.be/5N-okeDdIuI), a [Discord](https://discord.gg/Wsy2NpnZDu), and the rationale behind this structure — start there if you're learning how it fits together.
 
 ## What you get
 
@@ -15,7 +15,7 @@ One repo, one command, and a fresh Mac ends up configured the same way every tim
 - **Nix CLI packages** — ripgrep, fd, fzf, jq, lazygit, Neovim, tmux, gh, Hack Nerd Font
 - **Shell** — zsh (autosuggestions, syntax highlighting), aliases, starship prompt
 - **Git + SSH** — commit identity, sensible defaults, and a `github.com` key with macOS keychain integration
-- **Editor / terminal** — Neovim + WezTerm configs (rose-pine moon theme)
+- **Editor / terminal** — Neovim + WezTerm configs (rose-pine moon theme; WezTerm dims unfocused windows)
 - **Agent configs** — Claude, Codex, and opencode all share one `AGENTS.md`
 
 ## Prerequisites
