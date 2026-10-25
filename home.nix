@@ -232,7 +232,13 @@ in
     enable = true;
     settings = {
       add_newline = false;
-      format = "$directory$git_branch$git_status$cmd_duration$line_break$character";
+      format = "$hostname$directory$git_branch$git_status$cmd_duration$line_break$character";
+      # Shown only over SSH (ssh_only defaults to true), so a remote shell is obvious.
+      hostname = {
+        format = "[ $ssh_symbol$hostname ]($style) ";
+        ssh_symbol = "ssh ";
+        style = "bold black bg:yellow";
+      };
       character = {
         success_symbol = "[❯](purple)";
         error_symbol = "[❯](red)";
