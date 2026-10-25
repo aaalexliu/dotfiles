@@ -29,4 +29,11 @@
   system.activationScripts.postActivation.text = ''
     /usr/bin/pmset -c sleep 0
   '';
+
+  # Tailscale's own "start on login" is off here, so after a restart the box
+  # would stay off the tailnet even once someone logs in.
+  launchd.user.agents.tailscale.serviceConfig = {
+    ProgramArguments = [ "/usr/bin/open" "-b" "io.tailscale.ipn.macsys" ];
+    RunAtLoad = true;
+  };
 }
