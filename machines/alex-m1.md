@@ -49,3 +49,23 @@ Keep work inside tmux. tmux keeps running when the connection drops, and mosh ri
 Never forward your SSH agent here (`ssh -A`, `cmux ssh --forward-agent`). An agent on this box could then use the other Mac's keys, work key included.
 
 A restart cuts remote access until someone logs in at the keyboard: FileVault asks for the password at boot, and Tailscale only starts after login. Closing the lid also puts the Mac to sleep unless an external display is attached.
+
+## Coding agents (2026-10-25)
+
+On top of the shared `claude`, `claude-code`, and `cursor-cli`, `machines/alex-m1.nix` installs the `codex` CLI, the ChatGPT desktop app (now also the Codex app), the Cursor desktop app, and Grok Build (`grok`).
+
+Each vendor's phone app can drive agents on this box, with no open ports:
+
+- **Claude** - run `claude remote-control` in a repo, inside tmux. Sessions show up under Code in the Claude app.
+- **Codex** - pair the ChatGPT desktop app with the phone, then use Codex in the ChatGPT phone app.
+- **Cursor** - sign in to the Cursor iOS app and approve the pairing in the Cursor desktop app.
+- **Grok** - no phone app. Use `cmux mosh-tmux alex-m1`.
+
+Each of those accounts can now run commands on this box, so keep 2FA on them.
+
+Grok has no Homebrew cask. A home-manager step runs xAI's installer into `~/.grok` once, links only `grok` into `~/.local/bin`, and leaves updates to `grok update`. The installer's `agent` alias stays off `PATH`.
+
+How the apps got here:
+
+- The Codex app had renamed itself to `/Applications/ChatGPT Classic.app` (bundle ID `com.openai.codex`). I moved it to the Trash and installed the `chatgpt` cask, which is the same app and version. The older `/Applications/ChatGPT (Classic).app` (`com.openai.chat`) is still there.
+- `brew install --cask --adopt cursor` failed. macOS blocked brew from tagging a file inside the already-launched `Cursor.app`. Brew then deleted `/Applications/Cursor.app` as part of its rollback and left a dangling `/opt/homebrew/bin/cursor` link. Removing the link and running a plain `brew install --cask cursor` put it back. Settings in `~/.cursor` and `~/Library/Application Support/Cursor` were untouched. Before adopting any other cask that links a binary out of its app, move the app to the Trash and install fresh instead.

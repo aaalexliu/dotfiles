@@ -1,7 +1,7 @@
 { user, ... }:
 
 # Settings for alex-m1 alone (flake.nix loads machines/<host>.nix when it
-# exists). They let my other Macs reach this agent box over SSH. See
+# exists): SSH from my other Macs and the extra coding agents. See
 # machines/alex-m1.md for how to connect.
 {
   # Apple's built-in sshd, the same switch as Sharing > Remote Login.
@@ -35,5 +35,29 @@
   launchd.user.agents.tailscale.serviceConfig = {
     ProgramArguments = [ "/usr/bin/open" "-b" "io.tailscale.ipn.macsys" ];
     RunAtLoad = true;
+  };
+
+  # Coding agents on top of the shared Claude Code and Cursor CLI. The two apps
+  # let the ChatGPT and Cursor phone apps drive agents on this box.
+  homebrew.casks = [
+    "codex"    # Codex CLI
+    "chatgpt"  # ChatGPT desktop app, which now holds the Codex app
+    "cursor"   # Cursor desktop app
+  ];
+
+  # Grok Build has no Homebrew cask, so run xAI's installer once; `grok update`
+  # keeps it current after that. SHELL=/bin/sh stops the installer from editing
+  # ~/.zshrc, which home-manager owns (bash fills in an unset SHELL from the
+  # login shell). The bare PATH stops it from linking its `agent` alias into
+  # ~/.local/bin. Only `grok` goes there.
+  home-manager.users.${user} = { lib, ... }: {
+    home.activation.grok = lib.hm.dag.entryAfter [ "writeBoundary" ] ''
+      if [ ! -e "$HOME/.grok/bin/grok" ]; then
+        run /usr/bin/env -i HOME="$HOME" SHELL=/bin/sh PATH=/usr/bin:/bin:/usr/sbin:/sbin \
+          /bin/bash -c '/usr/bin/curl -fsSL https://x.ai/cli/install.sh | /bin/bash'
+      fi
+      run mkdir -p "$HOME/.local/bin"
+      run ln -sfn "$HOME/.grok/bin/grok" "$HOME/.local/bin/grok"
+    '';
   };
 }
