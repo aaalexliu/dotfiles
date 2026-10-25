@@ -35,7 +35,8 @@
       # machine gets (networking.hostName / computerName), so each Mac needs its
       # own distinct name here or they collide on the network (.local, AirDrop).
       # rebuild.sh selects the entry matching the machine's current hostname, so
-      # to add a machine you just add its name to this list.
+      # to add a machine you just add its name to this list. Settings for one
+      # machine alone go in machines/<name>.nix, which mkHost loads if present.
       hosts = [
         "alex-jxp"  # this machine (M5)
         "alex-m5"   # other machine
@@ -58,7 +59,9 @@
             home-manager.extraSpecialArgs = { inherit user; };
             home-manager.users.${user} = import ./home.nix;
           }
-        ];
+        ] ++ nixpkgs.lib.optional
+          (builtins.pathExists ./machines/${hostName}.nix)
+          ./machines/${hostName}.nix;
       };
     in
     {

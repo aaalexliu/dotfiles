@@ -31,3 +31,19 @@ After the build:
 - The pre-build `~/.zshrc`, `~/.zshenv`, `~/.ssh/config`, and `~/.claude/settings.json` live on as `*.backup`.
 
 Launch Ghostty from the Dock or Alfred, never from a shell inside a Claude session. Ghostty passes its environment to every tab, so a Ghostty started from Claude makes each new `claude` think it is a child session and turn off transcript saving.
+
+## Remote access (2026-10-25)
+
+My other Macs reach this box over SSH. `machines/alex-m1.nix` turns on Remote Login, allows keys only, and allows only the keys it lists. Those land in root-owned `/etc/ssh/nix_authorized_keys.d/`, and sshd ignores `~/.ssh/authorized_keys`, so an agent can't add a key of its own. To let another Mac in, add its `~/.ssh/id_ed25519.pub` to that list and run `./rebuild.sh`. The box never sleeps on power.
+
+Tailscale (tailnet `uilxela7@gmail.com`) names the box `alex-m1`. On the home network, `alex-m1.local` works too. From the other Mac:
+
+```sh
+ssh -t alex-m1 tmux new -A -s main   # plain SSH into one long-lived tmux session
+cmux ssh alex-m1                     # cmux workspace on this box
+cmux ssh-tmux alex-m1                # tmux sessions as cmux tabs; needs the Remote tmux beta setting
+```
+
+Never forward your SSH agent here (`ssh -A`, `cmux ssh --forward-agent`). An agent on this box could then use the other Mac's keys, work key included.
+
+A restart cuts remote access until someone logs in at the keyboard: FileVault asks for the password at boot, and Tailscale only starts after login. Closing the lid also puts the Mac to sleep unless an external display is attached.
