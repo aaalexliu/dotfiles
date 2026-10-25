@@ -37,6 +37,19 @@
     RunAtLoad = true;
   };
 
+  # Self-hosted HumanLayer from ~/dev/humanlayer, served on the tailnet. The
+  # script waits for OrbStack and Tailscale, so it is safe to start at login.
+  # It runs from the checkout, not the store, so a script fix needs only
+  # `launchctl kickstart -k gui/$(id -u)/org.nixos.humanlayer`, not a rebuild.
+  launchd.user.agents.humanlayer.serviceConfig = {
+    ProgramArguments = [ "/bin/bash" "/Users/${user}/.dotfiles/machines/alex-m1-humanlayer.sh" ];
+    RunAtLoad = true;
+    KeepAlive = true;
+    ThrottleInterval = 30;
+    StandardOutPath = "/Users/${user}/.humanlayer/riptide/logs/main/launchd.log";
+    StandardErrorPath = "/Users/${user}/.humanlayer/riptide/logs/main/launchd.log";
+  };
+
   # Coding agents on top of the shared Claude Code and Cursor CLI. The two apps
   # let the ChatGPT and Cursor phone apps drive agents on this box.
   homebrew.casks = [
