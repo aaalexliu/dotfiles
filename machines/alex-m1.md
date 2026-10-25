@@ -36,13 +36,15 @@ Launch Ghostty from the Dock or Alfred, never from a shell inside a Claude sessi
 
 My other Macs reach this box over SSH. `machines/alex-m1.nix` turns on Remote Login, allows keys only, and allows only the keys it lists. Those land in root-owned `/etc/ssh/nix_authorized_keys.d/`, and sshd ignores `~/.ssh/authorized_keys`, so an agent can't add a key of its own. To let another Mac in, add its `~/.ssh/id_ed25519.pub` to that list and run `./rebuild.sh`. The box never sleeps on power.
 
-Tailscale (tailnet `uilxela7@gmail.com`) names the box `alex-m1`. On the home network, `alex-m1.local` works too. From the other Mac:
+Tailscale (tailnet `uilxela7@gmail.com`) names the box `alex-m1`, and `machines/alex-m1.nix` opens Tailscale at login. On the home network, `alex-m1.local` works too. From the other Mac:
 
 ```sh
-ssh -t alex-m1 tmux new -A -s main   # plain SSH into one long-lived tmux session
-cmux ssh alex-m1                     # cmux workspace on this box
-cmux ssh-tmux alex-m1                # tmux sessions as cmux tabs; needs the Remote tmux beta setting
+cmux mosh-tmux alex-m1                # default: a cmux pane on tmux session "main", over mosh
+cmux ssh-tmux alex-m1                 # tmux windows as cmux tabs; needs the Remote tmux beta setting
+mosh alex-m1 -- tmux new -A -s main   # the same without cmux, e.g. from Blink on iOS
 ```
+
+Keep work inside tmux. tmux keeps running when the connection drops, and mosh rides through sleep and network changes. A plain `cmux ssh alex-m1` shell runs under the SSH connection and dies with it (seen with cmux 0.64.25 on the client). `mosh` comes from `home.nix`, so each Mac gets it on its own rebuild.
 
 Never forward your SSH agent here (`ssh -A`, `cmux ssh --forward-agent`). An agent on this box could then use the other Mac's keys, work key included.
 

@@ -192,6 +192,7 @@ in
       configureFlags = previousAttrs.configureFlags ++ [ "--enable-jemalloc" ];
     }))
     gh        # github cli
+    mosh      # ssh that survives sleep and network changes; `cmux mosh-tmux alex-m1`
     # portable cli i want reproducible across machines
     awscli2   # aws cli
     uv        # python package/proj manager
