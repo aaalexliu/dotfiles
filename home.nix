@@ -29,8 +29,10 @@ let
     ];
     packages = [
       # Official Slack MCP path (docs.slack.dev) and other remote MCP servers.
-      # Replaces pi-mcp-extension. Slack needs the fixed public clientId + :3118
-      # redirect in home/.pi/agent/mcp.json; bare auth:oauth is not enough.
+      # Replaces pi-mcp-extension. Slack needs the fixed public clientId and
+      # oauth.callbackUrl http://localhost:3118/callback in home/.pi/agent/mcp.json.
+      # Leave auth unset. Pi reads that file as its own mcp.json, and a string
+      # auth value is skipped because auth.provider must be a model provider name.
       "npm:pi-mcp-adapter"
       "npm:pi-web-access"
       "npm:@latentminds/pi-quotas"
@@ -362,9 +364,11 @@ in
     config.lib.file.mkOutOfStoreSymlink "${dotfiles}/home/.agents/skills/alex-mode";
 
   # MCP server list for pi-mcp-adapter. Same file under the standard MCP path and
-  # Pi's agent dir so both discovery roots stay aligned. Writable via the repo
-  # path (mkOutOfStoreSymlink); do not put secrets here - OAuth tokens live in
-  # the adapter keychain / Pi auth store after `/mcp-auth <server>`.
+  # Pi's agent dir so both discovery roots stay aligned. Pi's reader wins, so the
+  # file must stay in Pi's mcp.json shape: leave auth unset, and put Slack's
+  # redirect in oauth.callbackUrl. Writable via the repo path
+  # (mkOutOfStoreSymlink); do not put secrets here - OAuth tokens live in the
+  # adapter keychain / Pi auth store after `/mcp-auth <server>`.
   home.file.".pi/agent/mcp.json".source =
     config.lib.file.mkOutOfStoreSymlink "${dotfiles}/home/.pi/agent/mcp.json";
   home.file.".config/mcp/mcp.json".source =
