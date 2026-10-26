@@ -19,7 +19,8 @@
   `pi-docs` skill before anything else. Do not explore local config files or
   reverse-engineer internals when the docs already have the answer.
 - Use the `anthropic` connector for Anthropic models, including Fable, Opus, Sonnet,
-  and Haiku. Use the `openai-codex` connector for Codex models.
+  and Haiku. Use the `openai` connector (Sign in with ChatGPT) for Codex and other OpenAI models.
+  Do not use the legacy `openai-codex` connector.
 - For Datadog, use `pup`. Do not search for a Datadog MCP, API keys, or CloudWatch first.
 - For browser work, use `cmux browser` (see `cmux browser --help`). Open your own tab with
   `cmux --json browser open <url> --focus false --profile jxp`, keep the returned `surface_ref`,

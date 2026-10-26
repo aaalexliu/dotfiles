@@ -14,17 +14,17 @@ let
     modelThinkingLevels = {
       "xai/grok-4.5" = "medium";
       "xai/grok-4.7" = "high";
-      "openai-codex/gpt-6-sol" = "medium";
+      "openai/gpt-6-sol" = "medium";
       "anthropic/claude-opus-5-5" = "high";
-      "openai-codex/gpt-6-astra" = "low";
+      "openai/gpt-6-astra" = "low";
       "anthropic/claude-fable-5-1" = "high";
     };
     enabledModels = [
       "xai/grok-4.5:medium"
       "xai/grok-4.7:high"
-      "openai-codex/gpt-6-sol:medium"
+      "openai/gpt-6-sol:medium"
       "anthropic/claude-opus-5-5:high"
-      "openai-codex/gpt-6-astra:low"
+      "openai/gpt-6-astra:low"
       "anthropic/claude-fable-5-1:high"
     ];
     packages = [

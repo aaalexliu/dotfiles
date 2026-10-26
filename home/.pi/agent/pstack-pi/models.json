@@ -3,85 +3,85 @@
   "roles": {
     "feature": [
       "anthropic/claude-opus-5-5",
-      "openai-codex/gpt-6-sol"
+      "openai/gpt-6-sol"
     ],
     "refactoring": [
       "anthropic/claude-opus-5-5",
-      "openai-codex/gpt-6-sol"
+      "openai/gpt-6-sol"
     ],
     "bug-fix": "anthropic/claude-opus-5-5",
     "perf-issue": [
-      "openai-codex/gpt-6-astra",
+      "openai/gpt-6-astra",
       "anthropic/claude-fable-5-1"
     ],
     "hillclimb": [
-      "openai-codex/gpt-6-astra",
+      "openai/gpt-6-astra",
       "anthropic/claude-fable-5-1"
     ],
     "judgment": [
-      "openai-codex/gpt-6-astra",
+      "openai/gpt-6-astra",
       "anthropic/claude-fable-5-1"
     ],
     "prose": [
-      "openai-codex/gpt-6-astra",
+      "openai/gpt-6-astra",
       "anthropic/claude-fable-5-1"
     ],
     "hardest": [
-      "openai-codex/gpt-6-astra",
+      "openai/gpt-6-astra",
       "anthropic/claude-fable-5-1"
     ],
     "how-explorer": [
       "anthropic/claude-opus-5-5",
-      "openai-codex/gpt-6-sol"
+      "openai/gpt-6-sol"
     ],
     "how-explainer": "anthropic/claude-opus-5-5",
-    "how-critics": "openai-codex/gpt-6-sol",
+    "how-critics": "openai/gpt-6-sol",
     "why-investigator": "anthropic/claude-opus-5-5",
     "why-synthesizer": [
-      "openai-codex/gpt-6-astra",
+      "openai/gpt-6-astra",
       "anthropic/claude-fable-5-1"
     ],
-    "reflect-tooling": "openai-codex/gpt-6-sol",
+    "reflect-tooling": "openai/gpt-6-sol",
     "reflect-judgment": [
-      "openai-codex/gpt-6-astra",
+      "openai/gpt-6-astra",
       "anthropic/claude-fable-5-1"
     ],
     "reflect-divergent": [
-      "openai-codex/gpt-6-astra",
+      "openai/gpt-6-astra",
       "anthropic/claude-fable-5-1"
     ],
     "reflect-synthesizer": [
-      "openai-codex/gpt-6-astra",
+      "openai/gpt-6-astra",
       "anthropic/claude-fable-5-1"
     ],
     "arena-runner": [
       "anthropic/claude-opus-5-5",
-      "openai-codex/gpt-6-sol"
+      "openai/gpt-6-sol"
     ],
     "arena-cross-judge": [
-      "openai-codex/gpt-6-astra",
+      "openai/gpt-6-astra",
       "anthropic/claude-fable-5-1",
-      "openai-codex/gpt-6-sol"
+      "openai/gpt-6-sol"
     ],
     "swarm-worker": [
       "anthropic/claude-opus-5-5",
-      "openai-codex/gpt-6-sol"
+      "openai/gpt-6-sol"
     ],
     "architect-runner": "anthropic/claude-opus-5-5",
     "interrogate-reviewer": [
-      "openai-codex/gpt-6-sol",
+      "openai/gpt-6-sol",
       "anthropic/claude-fable-5-1",
-      "openai-codex/gpt-6-astra"
+      "openai/gpt-6-astra"
     ],
-    "no-comments": "openai-codex/gpt-6-luna",
-    "review": "openai-codex/gpt-6-sol",
+    "no-comments": "openai/gpt-6-luna",
+    "review": "openai/gpt-6-sol",
     "test": [
       "anthropic/claude-opus-5-5",
-      "openai-codex/gpt-6-sol"
+      "openai/gpt-6-sol"
     ],
     "verify": [
       "anthropic/claude-opus-5-5",
-      "openai-codex/gpt-6-sol"
+      "openai/gpt-6-sol"
     ]
   }
 }
