@@ -76,9 +76,11 @@ Self-hosted [HumanLayer](https://github.com/humanlayer/humanlayer) runs from `~/
 
 On the tailnet:
 
-- App: `https://alex-m1.tail8cf1f1.ts.net`
-- Admin (users, invites, metrics): `https://alex-m1.tail8cf1f1.ts.net:8443`
+- App: `https://alex-m1.tarpon-bramble.ts.net`
+- Admin (users, invites, metrics): `https://alex-m1.tarpon-bramble.ts.net:8443`
 - API, sync proxy, and artifact storage: ports 8444, 8445, and 8446
+
+The script reads the name from `tailscale status`, so a tailnet or machine rename needs no edits. It restarts itself when the name changes, resets `tailscale serve`, and registers the new origins with WorkOS.
 
 Sign-in goes through a WorkOS sandbox. The org is `alex-m1`, and its WorkOS metadata `internal_org_id` must match the org row in Postgres. The WorkOS JWT template copies that value into each token. Secrets live in `~/dev/humanlayer/.env` (mode 600, gitignored).
 
@@ -89,7 +91,8 @@ Decisions:
 - **The web apps are production builds.** Dev mode overlays the composer with Vite and FPS widgets and loads slowly over the tailnet. The API, sync proxy, and daemon run from source with `--watch`.
 - **Billing is off.** Every feature is on, and Stripe, Resend, GitHub, Slack, Linear, and Jira get placeholder keys so the API boots. Inviting users and creating orgs in the UI call Stripe, so they fail until a Stripe test key goes in.
 - **MinIO comes from `cgr.dev/chainguard/minio`.** Docker Hub dropped `minio/minio` and `minio/mc`. That one-line change is the only commit on branch `alex-m1`.
-- **Agent test user.** `uilxela7+hl-agent@gmail.com` is an admin in the org, so agents can sign in and check the UI. Its password is in `~/.humanlayer/agent-test-user`. A host belongs to one user, so it sees no host unless the daemon runs as it (`HUMANLAYER_DAEMON_USER_ID`).
+- **Agent test user.** `uilxela7+hl-agent@gmail.com` is an admin in the org, so agents can sign in and check the UI. Its password is in `~/.humanlayer/agent-test-user`. A host belongs to one user, so it sees no host until the daemon runs as it: `launchctl setenv HUMANLAYER_DAEMON_USER_ID <id from that file>`, then restart. Run `launchctl unsetenv HUMANLAYER_DAEMON_USER_ID` and restart again when done.
+- **Hidden tabs stop live updates.** The sync client pauses while the page is hidden, and a `cmux browser` tab opened with `--focus false` counts as hidden. Hosts then look offline and sessions look stuck until a reload. That is not a server fault. When testing, make the page report `visible` before trusting what it shows.
 
 Operating it:
 

@@ -46,10 +46,14 @@ API_PORT=$(env_value RIPTIDE_API_PORT)
 SYNC_PORT=$(env_value RIPTIDE_ELECTRIC_PROXY_PORT)
 S3_PORT=$(env_value DEVSTACK_MINIO_API_PORT)
 
+tailnet_host() { tailscale status --json | jq -r '.Self.DNSName | rtrimstr(".")'; }
 if [ "$MODE" = tailnet ]; then
-  HOST=$(tailscale status --json | jq -r '.Self.DNSName | rtrimstr(".")')
+  HOST=$(tailnet_host)
   APP="https://$HOST" CLOUD="https://$HOST:8443" API="https://$HOST:8444"
   SYNC="https://$HOST:8445" S3="https://$HOST:8446"
+  # This script owns the box's serve config. Reset drops entries left under an
+  # old name after a tailnet or machine rename.
+  tailscale serve reset
   tailscale serve --bg --https=443 "http://127.0.0.1:$UI_PORT" >/dev/null
   tailscale serve --bg --https=8443 "http://127.0.0.1:$CLOUD_PORT" >/dev/null
   tailscale serve --bg --https=8444 "http://127.0.0.1:$API_PORT" >/dev/null
@@ -60,6 +64,23 @@ else
   APP="http://localhost:$UI_PORT" CLOUD="http://localhost:$CLOUD_PORT" API="http://localhost:$API_PORT"
   SYNC="http://localhost:$SYNC_PORT" S3="http://localhost:$S3_PORT"
 fi
+
+# WorkOS only redirects to and accepts requests from origins it knows.
+# Register the current ones, so a rename never breaks sign-in.
+workos_allow() { # workos_allow <redirect_uris|cors_origins> <uri|origin> <value>
+  local key path=$1 field=$2 value=$3 url=https://api.workos.com/user_management
+  key=$(env_value WORKOS_API_KEY)
+  curl -fsS -H "Authorization: Bearer $key" "$url/$path?limit=100" |
+    jq -e --arg f "$field" --arg v "$value" 'any(.data[]; .[$f] == $v)' >/dev/null && return
+  curl -fsS -X POST -H "Authorization: Bearer $key" -H "Content-Type: application/json" \
+    -d "$(jq -n --arg f "$field" --arg v "$value" '{($f): $v}')" "$url/$path" >/dev/null &&
+    log "registered $value with WorkOS"
+}
+for pair in "redirect_uris uri $APP" "redirect_uris uri $CLOUD/auth/callback" \
+  "cors_origins origin $APP" "cors_origins origin $CLOUD"; do
+  # shellcheck disable=SC2086
+  workos_allow $pair || log "could not register ${pair##* } with WorkOS"
+done
 
 # Process env beats the devstack block in .env for Bun and Vite alike.
 export APP_ORIGIN="$APP" RIPTIDE_APP_ORIGIN="$APP" RIPTIDE_ELECTRON_RENDERER_URL="$APP"
@@ -105,17 +126,30 @@ start daemon apps/riptide-daemon env -i \
   RIPTIDE_CLOUD_ORIGIN="$CLOUD" RIPTIDE_DAEMON_CLOUD_ORIGIN="$CLOUD" \
   /opt/homebrew/bin/mise exec -- bun --bun --watch run src/daemon.ts
 
-log "building web apps"
-(cd apps/riptide-ui && VITE_PUBLIC_BUILD_TYPE=local VITE_PUBLIC_DEEP_LINK_SCHEME=riptide-local \
-  VITE_PUBLIC_REMOTE_DAEMON_BUILD_TYPE=local mise exec -- bun --bun run vite build) >>"$LOGS/ui.log" 2>&1
-(cd apps/riptide-cloud && mise exec -- bun --bun --env-file=../../.env run vite build) >>"$LOGS/cloud.log" 2>&1
+# Rebuild only when the source, .env, or origins changed, so a crash restart
+# is back in seconds instead of the two minutes a build takes.
+STAMP=$( { git rev-parse HEAD; git status --porcelain; shasum .env; env | grep '^VITE_' | sort; } | shasum | cut -c1-40)
+if [ "$(cat apps/riptide-ui/dist/.stamp 2>/dev/null)" != "$STAMP" ] ||
+  [ "$(cat apps/riptide-cloud/dist/.stamp 2>/dev/null)" != "$STAMP" ]; then
+  log "building web apps"
+  (cd apps/riptide-ui && VITE_PUBLIC_BUILD_TYPE=local VITE_PUBLIC_DEEP_LINK_SCHEME=riptide-local \
+    VITE_PUBLIC_REMOTE_DAEMON_BUILD_TYPE=local mise exec -- bun --bun run vite build) >>"$LOGS/ui.log" 2>&1
+  (cd apps/riptide-cloud && mise exec -- bun --bun --env-file=../../.env run vite build) >>"$LOGS/cloud.log" 2>&1
+  echo "$STAMP" > apps/riptide-ui/dist/.stamp
+  echo "$STAMP" > apps/riptide-cloud/dist/.stamp
+fi
 start ui apps/riptide-ui mise exec -- bun --bun run vite preview --host 127.0.0.1 --port "$UI_PORT" --strictPort
 start cloud apps/riptide-cloud mise exec -- bun --bun --env-file=../../.env run vite preview --host 127.0.0.1 --port "$CLOUD_PORT" --strictPort
 
 log "running at $APP"
-# Exit when any process dies; launchd then restarts the whole set.
+# Exit when any process dies or the tailnet name changes; launchd then
+# restarts the whole set with fresh origins.
 while sleep 10; do
   for pid in "${pids[@]}"; do
     kill -0 "$pid" 2>/dev/null || { log "process $pid exited, restarting"; exit 1; }
   done
+  if [ "$MODE" = tailnet ]; then
+    now=$(tailnet_host 2>/dev/null || true)
+    if [ -n "$now" ] && [ "$now" != "$HOST" ]; then log "renamed to $now, restarting"; exit 1; fi
+  fi
 done
