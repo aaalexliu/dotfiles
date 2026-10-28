@@ -29,20 +29,13 @@
     "command": "input=$(cat); model=$(echo \"$input\" | jq -r '.model.display_name'); used=$(echo \"$input\" | jq -r '.context_window.used_percentage // empty'); if [ -n \"$used\" ]; then printf \"%s | ctx: %.0f%% used\" \"$model\" \"$used\"; else printf \"%s\" \"$model\"; fi"
   },
   "enabledPlugins": {
-    "caveman@caveman": true,
-    "lapdog@lapdog": true
+    "caveman@caveman": true
   },
   "extraKnownMarketplaces": {
     "caveman": {
       "source": {
         "source": "github",
         "repo": "JuliusBrussee/caveman"
-      }
-    },
-    "lapdog": {
-      "source": {
-        "source": "github",
-        "repo": "DataDog/dd-apm-test-agent"
       }
     }
   },

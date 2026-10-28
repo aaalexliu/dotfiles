@@ -71,14 +71,10 @@
     # MDM-managed brew packages (e.g. twingate) are left alone on rebuild.
     onActivation.cleanup = "none";
     onActivation.autoUpdate = true;
-    taps = [
-      "datadog/lapdog"
-    ];
     brews = [
       "herdr"
       "mise"  # runtime version manager, activated in ~/.zshrc via home.nix
-      "datadog/lapdog/lapdog"  # opt-in tracing: `lapdog claude` or `lapdog pi`
-      "pi-coding-agent"  # `pi`; on PATH for non-interactive shells so lapdog can exec it
+      "pi-coding-agent"  # `pi` in /opt/homebrew/bin, so non-interactive shells find it too
     ];
     casks = [
       "wezterm"
