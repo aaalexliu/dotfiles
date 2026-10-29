@@ -41,8 +41,10 @@ Tailscale (tailnet `uilxela7@gmail.com`) names the box `alex-m1`, and `machines/
 ```sh
 cmux mosh-tmux alex-m1                # default: a cmux pane on tmux session "main", over mosh
 cmux ssh-tmux alex-m1                 # tmux windows as cmux tabs; needs the Remote tmux beta setting
-mosh alex-m1 -- tmux new -A -s main   # the same without cmux, e.g. from Blink on iOS
+mosh alex-m1 -- tmux new -A -s main   # the same without cmux, e.g. from Moshi on iOS
 ```
+
+My iPhone gets in with the Moshi app over Tailscale. Moshi's Easy Pair (`moshi-hook host setup`) writes the phone's key to `~/.ssh/authorized_keys`, which sshd ignores here. Check that the fingerprint Moshi shows matches `ssh-keygen -lf ~/.ssh/authorized_keys`, then copy the key into the list in `machines/alex-m1.nix`.
 
 Keep work inside tmux. tmux keeps running when the connection drops, and mosh rides through sleep and network changes. A plain `cmux ssh alex-m1` shell runs under the SSH connection and dies with it (seen with cmux 0.64.25 on the client). `mosh` comes from `home.nix`, so each Mac gets it on its own rebuild.
 

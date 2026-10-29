@@ -18,10 +18,12 @@
     AllowUsers ${user}
   '';
 
-  # One public key per Mac that may log in.
+  # One public key per device that may log in.
   users.users.${user}.openssh.authorizedKeys.keys = [
     # alex-jxp, and possibly alex-m5 if it shares the same key
     "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIFxse50wpqF6v8fZuK7BYyQPGXQFrQAte08+R9PiVEXq 4alexliu@gmail.com"
+    # iPhone, Moshi app (from Easy Pair on 2026-10-29)
+    "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIAw0PlSQDfGZc6bMj+1d05u0jGlVOgszH/m5HGJwMyBD iphone-moshi"
   ];
 
   # Tailscale can't wake a sleeping Mac, so never sleep on power. The
