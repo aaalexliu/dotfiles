@@ -23,6 +23,10 @@
       flake = false;
     };
     nix-homebrew.inputs.brew-src.follows = "homebrew-brew";
+
+    # Markdown search for pi-memory's memory_search. Keep qmd's own nixpkgs:
+    # its node_modules hash is tied to the bun version in qmd's lock.
+    qmd.url = "github:tobi/qmd";
   };
 
   outputs = inputs@{ self, nix-darwin, nix-homebrew, home-manager, nixpkgs, ... }:
@@ -57,6 +61,7 @@
             # file is renamed to <name>.backup on first activation.
             home-manager.backupFileExtension = "backup";
             home-manager.extraSpecialArgs = { inherit user; };
+            home-manager.sharedModules = [ inputs.qmd.homeModules.default ];
             home-manager.users.${user} = import ./home.nix;
           }
         ] ++ nixpkgs.lib.optional

@@ -388,6 +388,10 @@ in
     run ${upgradePi}
   '';
 
+  # qmd backs pi-memory's memory_search. pi-memory creates the `pi-memory`
+  # collection and runs `qmd embed` itself; the index lives in ~/.cache/qmd.
+  programs.qmd.enable = true;
+
   # pi reads its global context file from ~/.pi/agent (see loadProjectContextFiles
   # in the pi-coding-agent package, and docs/usage.md). Link the single file, never
   # the directory: ~/.pi/agent also holds live state that pi owns and rewrites
