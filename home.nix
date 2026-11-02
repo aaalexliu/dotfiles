@@ -38,6 +38,8 @@ let
       "npm:@latentminds/pi-quotas"
       "npm:@gotgenes/pi-anthropic-auth"
       "npm:@narumitw/pi-caffeinate"
+      # Markdown memory in ~/.pi/agent/memory. memory_search needs qmd.
+      "npm:pi-memory"
       "https://github.com/aaalexliu/pstack-pi"
     ];
   });
