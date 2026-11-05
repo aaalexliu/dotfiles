@@ -39,6 +39,8 @@
   even when `command -v origin` succeeds.
 - After editing this file, commit and push in `~/dev/dotfiles` so the change persists
   across Home Manager rebuilds.
+- Pi's default model, enabled models, thinking levels, and packages live in `~/dev/dotfiles/home.nix`.
+  A rebuild overwrites them in `~/.pi/agent/settings.json`, so change them in `home.nix`.
 - Before using "dynamic workflows", "ultra code" or any harness feature that immediately spawns a large swarm of subagents, always explain the tradeoffs and ask the user for explicit approval.
 
 ## Writing style
