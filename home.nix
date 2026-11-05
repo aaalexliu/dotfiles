@@ -28,6 +28,7 @@ let
       "anthropic/claude-fable-5-1:high"
     ];
     packages = [
+      "https://github.com/aaalexliu/pstack-pi"
       # Official Slack MCP path (docs.slack.dev) and other remote MCP servers.
       # Replaces pi-mcp-extension. Slack needs the fixed public clientId and
       # oauth.callbackUrl http://localhost:3118/callback in home/.pi/agent/mcp.json.
@@ -40,7 +41,6 @@ let
       "npm:@narumitw/pi-caffeinate"
       # Markdown memory in ~/.pi/agent/memory. memory_search needs qmd.
       "npm:pi-memory"
-      "https://github.com/aaalexliu/pstack-pi"
     ];
   });
 
