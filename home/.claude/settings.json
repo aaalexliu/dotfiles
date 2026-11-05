@@ -41,5 +41,13 @@
   },
   "theme": "dark-ansi",
   "preferredNotifChannel": "ghostty",
-  "agentPushNotifEnabled": true
+  "agentPushNotifEnabled": true,
+  "modelSettings": {
+    "claude-opus-5-5": {
+      "effortLevel": "xhigh"
+    }
+  },
+  "permissions": {
+    "defaultMode": "auto"
+  }
 }
