@@ -11,6 +11,7 @@
   If something clearly looks off, even if it is not directly related to what you are doing, try to get it fixed along the way.
 - Apply that same high standard to engineering excellence: lint, test failures, and test flakiness.
   If you see one, even if it is not caused by what you are working on right now, still get it fixed.
+  Fix it in its own PR, not in the PR for the current task.
 - Treat a request to review a pull request as a request for rigorous analysis, not approval.
   Report findings first. Never submit an approval unless the user explicitly asks you to approve.
 - When creating git worktrees, name the directory `<repo>-<last-segment-of-branch-name>` as a sibling of the repo.
