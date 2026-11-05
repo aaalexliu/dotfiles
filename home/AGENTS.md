@@ -21,14 +21,8 @@
 - Use the `anthropic` connector for Anthropic models, including Fable, Opus, Sonnet,
   and Haiku. Use the `openai` connector (Sign in with ChatGPT) for Codex and other OpenAI models.
   Do not use the legacy `openai-codex` connector.
-- Pi auth profiles (pstack-pi's `extensions/profiles`) pick provider logins by folder. Chats under
-  `~/dev/jxp/radiance` use the Radiance Claude account; every other folder uses the default login.
-  Each session takes `PI_AUTH_PROFILE` if it was set when Pi launched (a parent Pi passes it to its
-  children), else the deepest `dirs` match in `~/.pi/agent/pstack-pi/profiles.json`.
-  Start one by hand with `PI_AUTH_PROFILE=radiance pi`; force the default with
-  `PI_AUTH_PROFILE=default pi`. Check the account with `/anthropic-auth:status --account`.
-  Inside a profile, `/login` saves to `~/.pi/agent/pstack-pi/profiles/<name>/auth.json`, so log in
-  the default account from outside profile folders. Details: "Auth profiles" in the pstack-pi README.
+- Pi picks provider logins by folder through auth profiles in `~/.pi/agent/pstack-pi/profiles.json`.
+  Override with `PI_AUTH_PROFILE=<name> pi`. See "Auth profiles" in the pstack-pi README.
 - For Datadog, use `pup`. Do not search for a Datadog MCP, API keys, or CloudWatch first.
 - For browser work, use `cmux browser` (see `cmux browser --help`). Open your own tab with
   `cmux --json browser open <url> --focus false --profile jxp`, keep the returned `surface_ref`,
