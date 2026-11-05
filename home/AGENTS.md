@@ -66,10 +66,12 @@ Everything a user reads follows Orwell's six rules: docs, comments, commit messa
   Do not translate or paraphrase `--flag`, `snake_case_name`, or `src/main.py`.
 - Leave fenced code blocks unchanged. Reproduce them exactly. Same for YAML frontmatter.
 - Keep Markdown structure: headings, lists, tables, links.
-- Make every PR reference and every website a clickable link, everywhere: chat, PR bodies, commit
-  messages, Linear and Slack, and docs. Write a Markdown link with the full URL, such as
-  [app#17](https://github.com/example-org/app/pull/17), or the bare URL.
-  Never write a bare `#17` or `repo#17`, and never put a URL in backticks, because neither links.
+- Make every PR reference, Linear ticket and website a clickable link, everywhere: chat, PR bodies,
+  commit messages, Linear and Slack, and docs. Write a Markdown link with the full URL, such as
+  [app#17](https://github.com/example-org/app/pull/17) or
+  [ENG-42](https://linear.app/example-org/issue/ENG-42), or the bare URL.
+  Never write a bare `#17`, `repo#17` or `ENG-42`, and never put a URL or ticket key in backticks,
+  because none of them link.
 - Output only the text itself - no preamble, no labels, no commentary about what you just did.
 
 ## Maintaining this file
