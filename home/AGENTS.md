@@ -70,8 +70,9 @@ Everything a user reads follows Orwell's six rules: docs, comments, commit messa
   commit messages, Linear and Slack, and docs. Write a Markdown link with the full URL, such as
   [app#17](https://github.com/example-org/app/pull/17) or
   [ENG-42](https://linear.app/example-org/issue/ENG-42), or the bare URL.
-  Never write a bare `#17`, `repo#17` or `ENG-42`, and never put a URL or ticket key in backticks,
-  because none of them link.
+  This holds for every mention, not only the first. Never write a bare `#17`, `repo#17` or `ENG-42`,
+  and never put a URL or ticket key in backticks, because none of them link.
+  A team convention to backtick ticket keys in Linear does not apply to chat.
 - Output only the text itself - no preamble, no labels, no commentary about what you just did.
 
 ## Maintaining this file
